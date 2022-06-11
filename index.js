@@ -16,11 +16,11 @@ async function pwnMe() {
 	if (location.protocol = "https:") {
 		document.getElementById("jbButton").disabled = true;
 		if (currentFirmware(navigator.userAgent).startsWith("14.5")) {
-			alert("Hey!\nAs of now, the jailbreak is not ready.");
+			alert("Hey!\nAs of now, the jailbreak is not ready.\nTODO:\nGet exploit working correctly.\nAdd APT (Package Manager stuffs)");
 			socket.send("log_normal", "Starting exploitation for iOS 14.5");
 			await kickstart145();
 		} else if (currentFirmware(navigator.userAgent).startsWith("14.6")) {
-			alert("Hey!\nAs of now, the jailbreak is not ready.");
+			alert("Hey!\nAs of now, the jailbreak is not ready.\nTODO:\nGet exploit working correctly.\nAdd APT (Package Manager stuffs)");
 			socket.send("log_normal", "Starting exploitation for iOS 14.6");
 			await kickstart146();
 		} else if (navigator.userAgent.includes("Windows NT 10.0")) {
