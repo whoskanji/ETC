@@ -1,0 +1,76 @@
+* {
+    margin: 0px;
+}
+
+:root {
+    --app-height: 100%;
+ }
+
+body {
+    font-family: monospace;
+    background-color: black;
+    color: #e5e5e5;       
+}
+
+h1, h5 {
+    text-align: center;
+}
+
+.header {
+    margin: 30px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;    
+    justify-content: space-between;
+    align-items: center;    
+    height: var(--app-height);    
+}
+
+h5 {
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+h1 {
+    margin-bottom: 5px;
+}
+
+.exploitButton {
+    border-radius: 7px;
+    outline: none;
+    border: none;
+    box-shadow: none;
+    background-color: #313131;
+    color: #e5e5e5;
+    padding: 15px;
+    width: 90%;   
+    font-size: 15px; 
+    margin: 5%;
+}
+
+@media screen and (orientation:portrait) {
+    .logo {
+        width: 40vw;
+        height: 40vw;
+    }
+}
+
+@media screen and (orientation:landscape) {
+    .logo {
+        width: 40vh;
+        height: 40vh;
+    }
+}
+
+.jbBox {    
+    border-radius: 7px;
+    box-shadow: none;
+    background-color: #202020;
+    color: #e5e5e5;
+    padding: 25px;
+    font-size: 15px;
+    margin: 30px;
+    text-align: center;
+}
