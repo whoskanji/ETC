@@ -27,6 +27,7 @@ async function pwnMe() {
 			socket.send("log_normal", "Dude is on windows. dummy");
 			alert("This is an iOS jailbreak, use this on your iPhone. Not your PC.");
 		} else {
+			alert("Hey!\nLooks like you are on an unsupported version/device.");
 			socket.send("error", "Detected a unsupported version/device");
 		}
 	}else{
