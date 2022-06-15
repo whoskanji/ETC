@@ -8,9 +8,9 @@
 
 body {
     font-family: monospace;
-    background: linear-gradient(-45deg, #a53e1e, #8a113f, #075d7c, #037459);
+    background: linear-gradient(-45deg, #610051, #000000, #610051, #000000);
     background-size: 400% 400%;
-    animation: gradient 15s ease infinite;
+    animation: gradient 30s ease infinite;
     color: #e5e5e5;       
 }
 

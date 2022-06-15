@@ -11,15 +11,15 @@ Current Exploit is only for iOS 14.5+ as it exploits a vulnerability in audiowor
 
 There is no estimated time of arrival at this point. We're doing our best with development, and we're getting closer to a release every day.
 
-### How does manticore differ from other jailbreaks?
+### How does Etcetera differ from other jailbreaks?
 
 We are trying to make it completely customizable, configurable (Selectable APT GUI etc.), and dynamic. There’s also a #suggestions channel in our discord (below), where you can send your suggestions to us and we can consider implementation.
 
-### What iOS Versions/Devices are supported by Manticore?
+### What iOS Versions/Devices are supported by Etcetera?
 
 We currently support all iOS versions from iOS 14.0 to 14.3, as well as all devices, including A14.
 
-### What package manager will Manticore use?
+### What package manager will Etcetera use?
 
 We're planning on selectable package managers including Sileo, Cydia, Installer, and Zebra.
 
@@ -34,7 +34,7 @@ Kanji
 # 📜 To Do
 
 - [ ] Find and implement a Kernel Exploit
-- [ ] Create a better UI
+- [x] Create a better UI
 - [ ] Implement APT/PM selector (Cydia, Sileo, Zebra etc..)
 - [x] Find a host for Front and Back ends with SSL in-house
 
