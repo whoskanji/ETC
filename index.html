@@ -30,17 +30,19 @@
 		<div id="interact" style="width: 100%;">
             <button id="jbButton" class="exploitButton" onclick="pwnMe();">Jailbreak</button>
 			<script>
-				var isMobile = navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)|/i)
+				var devices = (/iPhone|iPad|iPod/i);
 
-  				if (currentFirmware(navigator.userAgent).startsWith("14.5") && isMobile) {
-    				document.getElementById("jbButton").innerHTML = "Jailbreak";
-  				} else if (currentFirmware(navigator.userAgent).startsWith("14.6") && isMobile) {
-					document.getElementById("jbButton").innerHTML = "Jailbreak";
-				} else if (navigator.userAgent != isMobile) {
-    				document.getElementById("jbButton").innerHTML = "Unsupported: iOS Only";
-  				} else {
-					document.getElementById("jbButton").innerHTML = "Unsupported";
-  				}
+				if(devices.test(navigator.userAgent))	{
+					if (currentFirmware(navigator.userAgent).startsWith("14.5") && isMobile) {
+    					document.getElementById("jbButton").innerHTML = "Jailbreak";
+  					} else if (currentFirmware(navigator.userAgent).startsWith("14.6") && isMobile) {
+						document.getElementById("jbButton").innerHTML = "Jailbreak";
+					} else {
+						document.getElementById("jbButton").innerHTML = "Unupported";
+					}
+				} else {
+  					document.getElementById("jbButton").innerHTML = "Unupported: Desktop Environment";
+				}
 			</script>
             <div id="page-wrap" style="display: none;"><div id="well"><h2><strong id="slider"></strong><span>slide to jailbreak</span></h2></div></div>
 		</div>		
