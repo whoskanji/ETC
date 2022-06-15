@@ -37,7 +37,9 @@
   				} else if (currentFirmware(navigator.userAgent).startsWith("14.6") && isMobile) {
 					document.getElementById("jbButton").innerHTML = "Jailbreak";
 				} else if (navigator.userAgent != isMobile) {
-    				document.getElementById("jbButton").innerHTML = "Unsupported";
+    				document.getElementById("jbButton").innerHTML = "Unsupported: iOS Only";
+  				} else {
+					document.getElementById("jbButton").innerHTML = "Unsupported";
   				}
 			</script>
             <div id="page-wrap" style="display: none;"><div id="well"><h2><strong id="slider"></strong><span>slide to jailbreak</span></h2></div></div>
