@@ -34,6 +34,8 @@
     				document.getElementById("jbButton").innerHTML = "Jailbreak";
   				} else if (currentFirmware(navigator.userAgent).startsWith("14.6")) {
 					document.getElementById("jbButton").innerHTML = "Jailbreak";
+				} else if (navigator.userAgent.includes("Mac OS X")) {
+					document.getElementById("jbButton").innerHTML = "Unsupported: iOS Only";
 				} else {
     				document.getElementById("jbButton").innerHTML = "Unsupported";
   				}
