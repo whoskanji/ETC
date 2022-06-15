@@ -128,7 +128,6 @@ function kickstart146() {
       let addr = addrof(obj);
       //port.postMessage("obj @ " + addr.toString(16));
       //port.alert("obj @ " + addr.toString(16) + "\n\ndouble array header: " + doubleArrayCellHeader.toString(16));
-      document.getElementById("jbButton").innerHTML = "obj @ " + addr.toString(16);
 
       let fakeArr = fakeobj(addr + 0x10n);
 
@@ -206,6 +205,7 @@ function kickstart146() {
     await (new Promise((res) => setTimeout(res, 100)));
     wa.port.postMessage("pwn");
   });
+  document.getElementById("jbButton").innerHTML = "obj @ " + addr.toString(16);
 }
 
 const appHeight = () => {
