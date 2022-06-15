@@ -19,7 +19,7 @@
 </head>
 <body>
 	<div class="content">
-		<script type="text/javascript" src="index.js"></script>
+		<script type="text/javascript" src="index.js" onload="UACheck();"></script>
 		<div class="header" onclick="slideEasterEgg();">
 			<h1>Etcetera // その他</h1>
 			<h5>For iOS 14.5 - 14.6</h5>
@@ -28,7 +28,14 @@
 			<h5>WIP and Hopefully Finished By <a href="https://twitter.com/kanjishere" style="color:rgb(255, 0, 255);">Kanji</a></h5>
 		</div>
 		<div id="interact" style="width: 100%;">
-            <button id="jbButton" class="exploitButton" onclick="pwnMe();">Jailbreak</button>	
+            <button id="jbButton" class="exploitButton" onclick="pwnMe();">Jailbreak</button>
+			<script>
+  				if (currentFirmware(navigator.userAgent).startsWith("14.5") && (currentFirmware(navigator.userAgent).startsWith("14.6"))) {
+    				document.getElementById("jbButton").innerHTML = "Jailbreak";
+  				} else {
+    				document.getElementById("jbButton").innerHTML = "Unsupported";
+  				}
+			</script>
             <div id="page-wrap" style="display: none;"><div id="well"><h2><strong id="slider"></strong><span>slide to jailbreak</span></h2></div></div>
 		</div>		
 	</div>
