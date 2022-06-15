@@ -14,22 +14,24 @@ function slideEasterEgg() {
 }
 
 async function pwnMe() {
-	if (location.protocol = "https:") {
-		document.getElementById("jbButton").disabled = true;
-		if (currentFirmware(navigator.userAgent).startsWith("14.5")) {
-      document.getElementById("jbButton").innerHTML = "Jailbreaking...";
-      alert("AudioWorklet exploit for iOS 14.5 has been executed!");
-			//await kickstart145();
-		} else if (currentFirmware(navigator.userAgent).startsWith("14.6")) {
-      document.getElementById("jbButton").innerHTML = "Jailbreaking...";
-      alert("AudioWorklet exploit for iOS 14.6 has been executed!");
-			kickstart146();
+  if (location.protocol === "https:") {
+    document.getElementById("jbButton").disabled = true;
+    var devices = (/iPhone|iPad|iPod/i);
+    if(devices.test(navigator.userAgent))	{
+			if (currentFirmware(navigator.userAgent).startsWith("14.5")) {
+        document.getElementById("jbButton").innerHTML = "Jailbreaking...";
+        alert("AudioWorklet exploit for iOS 14.5 has been executed!");
+  		} else if (currentFirmware(navigator.userAgent).startsWith("14.6")) {
+        document.getElementById("jbButton").innerHTML = "Jailbreaking...";
+        alert("AudioWorklet exploit for iOS 14.6 has been executed!");
+			} else {
+				document.getElementById("jbButton").innerHTML = "Unsupported: iOS " + currentFirmware(navigator.userAgent);
+        alert("Uh-oh!\n\n" + currentFirmware(navigator.userAgent) + " is not supported.\n\nPlease use an iOS 14.5 or 14.6 device.");
+			}
 		} else {
-      alert("Uh oh!\n\nEtcetera does not support your firmware/device.");
+  		document.getElementById("jbButton").innerHTML = "Unsupported: " + navigator.userAgent;
 		}
-	}else{
-		socket.send("error", "ur mom gey");
-	}
+  }
 }
 
 var keep = [];
