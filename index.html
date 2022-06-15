@@ -30,12 +30,12 @@
 		<div id="interact" style="width: 100%;">
             <button id="jbButton" class="exploitButton" onclick="pwnMe();">Jailbreak</button>
 			<script>
-  				if (currentFirmware(navigator.userAgent).startsWith("14.5")) {
+				var isMobile = navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)|/i)
+
+  				if (currentFirmware(navigator.userAgent).startsWith("14.5") && isMobile) {
     				document.getElementById("jbButton").innerHTML = "Jailbreak";
-  				} else if (currentFirmware(navigator.userAgent).startsWith("14.6")) {
+  				} else if (currentFirmware(navigator.userAgent).startsWith("14.6") && isMobile) {
 					document.getElementById("jbButton").innerHTML = "Jailbreak";
-				} else if (navigator.userAgent.includes("macOS")) {
-					document.getElementById("jbButton").innerHTML = "Unsupported: iOS Only";
 				} else {
     				document.getElementById("jbButton").innerHTML = "Unsupported";
   				}
