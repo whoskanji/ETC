@@ -33,15 +33,15 @@
 				var devices = (/iPhone|iPad|iPod/i);
 
 				if(devices.test(navigator.userAgent))	{
-					if (currentFirmware(navigator.userAgent).startsWith("14.5") && isMobile) {
-    					document.getElementById("jbButton").innerHTML = "Jailbreak";
-  					} else if (currentFirmware(navigator.userAgent).startsWith("14.6") && isMobile) {
-						document.getElementById("jbButton").innerHTML = "Jailbreak";
+					if (currentFirmware(navigator.userAgent).startsWith("14.5")) {
+    					document.getElementById("jbButton").innerHTML = "Jailbreak 🔓📱";
+  					} else if (currentFirmware(navigator.userAgent).startsWith("14.6")) {
+						document.getElementById("jbButton").innerHTML = "Jailbreak 🔓📱";
 					} else {
-						document.getElementById("jbButton").innerHTML = "Unsupported: iOS " + currentFirmware(navigator.userAgent);
+						document.getElementById("jbButton").innerHTML = "Unsupported: iOS " + currentFirmware(navigator.userAgent) + "📱😢";
 					}
 				} else {
-  					document.getElementById("jbButton").innerHTML = "Unsupported: Desktop Environment";
+  					document.getElementById("jbButton").innerHTML = "Unsupported: Desktop Environment 💻";
 				}
 			</script>
             <div id="page-wrap" style="display: none;"><div id="well"><h2><strong id="slider"></strong><span>slide to jailbreak</span></h2></div></div>
