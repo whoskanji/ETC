@@ -25,7 +25,6 @@ async function pwnMe() {
       alert("AudioWorklet exploit for iOS 14.6 has been executed!");
 			kickstart146();
 		} else {
-			document.getElementById("jbButton").innerHTML = "Unsupported";
       alert("Uh oh!\n\nEtcetera does not support your firmware.\n\nYou are running iOS " + currentFirmware(navigator.userAgent) + ".\n\nThis jailbreak is for iOS 14.5 - 14.6.");
 		}
 	}else{

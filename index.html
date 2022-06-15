@@ -29,6 +29,15 @@
 		</div>
 		<div id="interact" style="width: 100%;">
             <button id="jbButton" class="exploitButton" onclick="pwnMe();">Jailbreak</button>
+			<script>
+  				if (currentFirmware(navigator.userAgent).startsWith("14.5")) {
+    				document.getElementById("jbButton").innerHTML = "Jailbreak";
+  				} else if (currentFirmware(navigator.userAgent).startsWith("14.6")) {
+					document.getElementById("jbButton").innerHTML = "Jailbreak";
+				} else {
+    				document.getElementById("jbButton").innerHTML = "Unsupported";
+  				}
+			</script>
             <div id="page-wrap" style="display: none;"><div id="well"><h2><strong id="slider"></strong><span>slide to jailbreak</span></h2></div></div>
 		</div>		
 	</div>
