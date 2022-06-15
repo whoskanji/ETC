@@ -38,7 +38,7 @@
   					} else if (currentFirmware(navigator.userAgent).startsWith("14.6") && isMobile) {
 						document.getElementById("jbButton").innerHTML = "Jailbreak";
 					} else {
-						document.getElementById("jbButton").innerHTML = "Unsupported: iOS" + currentFirmware(navigator.userAgent);
+						document.getElementById("jbButton").innerHTML = "Unsupported: iOS " + currentFirmware(navigator.userAgent);
 					}
 				} else {
   					document.getElementById("jbButton").innerHTML = "Unsupported: " + navigator.userAgent;
