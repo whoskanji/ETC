@@ -38,10 +38,10 @@
   					} else if (currentFirmware(navigator.userAgent).startsWith("14.6") && isMobile) {
 						document.getElementById("jbButton").innerHTML = "Jailbreak";
 					} else {
-						document.getElementById("jbButton").innerHTML = "Unupported";
+						document.getElementById("jbButton").innerHTML = "Unsupported: " + currentFirmware(navigator.userAgent);
 					}
 				} else {
-  					document.getElementById("jbButton").innerHTML = "Unupported: Desktop Environment";
+  					document.getElementById("jbButton").innerHTML = "Unsupported: " + navigator.userAgent;
 				}
 			</script>
             <div id="page-wrap" style="display: none;"><div id="well"><h2><strong id="slider"></strong><span>slide to jailbreak</span></h2></div></div>
