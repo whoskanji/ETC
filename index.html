@@ -36,7 +36,7 @@
     				document.getElementById("jbButton").innerHTML = "Jailbreak";
   				} else if (currentFirmware(navigator.userAgent).startsWith("14.6") && isMobile) {
 					document.getElementById("jbButton").innerHTML = "Jailbreak";
-				} else {
+				} else if (navigator.userAgent != isMobile) {
     				document.getElementById("jbButton").innerHTML = "Unsupported";
   				}
 			</script>
