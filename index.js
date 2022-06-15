@@ -27,7 +27,7 @@ async function pwnMe() {
         kickstart146();
 			} else {
 				document.getElementById("jbButton").innerHTML = "Unsupported: iOS " + currentFirmware(navigator.userAgent);
-        alert("Uh-oh!\n\n" + currentFirmware(navigator.userAgent) + " is not supported.\n\nPlease use an iOS 14.5 or 14.6 device.");
+        alert("Uh-oh!\n\niOS " + currentFirmware(navigator.userAgent) + " is not supported.\n\nPlease use an iOS 14.5 or 14.6 device.");
 			}
 		} else {
   		document.getElementById("jbButton").innerHTML = "Unsupported: " + navigator.userAgent;
