@@ -30,8 +30,8 @@ async function pwnMe() {
         alert("Uh-oh!\n\niOS " + currentFirmware(navigator.userAgent) + " is not supported.\n\nPlease use an iOS 14.5 or 14.6 device.");
 			}
 		} else {
-  		document.getElementById("jbButton").innerHTML = "Unsupported: " + navigator.userAgent;
-      alert("Uh-oh!\n\n" + navigator.userAgent + " is not supported.\n\nUse this on a compatible iOS device.");
+  		document.getElementById("jbButton").innerHTML = "Unsupported: Desktop Environment";
+      alert("Uh-oh!\n\nYou are on a desktop environment, which is not supported.\n\nUse this on a compatible iOS device.");
 		}
   }
 }
