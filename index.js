@@ -22,7 +22,7 @@ async function pwnMe() {
         document.getElementById("jbButton").innerHTML = "Jailbreaking...";
         alert("AudioWorklet exploit for iOS 14.5 has been executed!");
   		} else if (currentFirmware(navigator.userAgent).startsWith("14.6")) {
-        document.getElementById("jbButton").innerHTML = "Jailbreaking...";
+        //document.getElementById("jbButton").innerHTML = "Jailbreaking...";
         alert("AudioWorklet exploit for iOS 14.6 has been executed!");
         kickstart146();
 			} else {
