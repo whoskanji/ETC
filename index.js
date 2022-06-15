@@ -204,8 +204,7 @@ function kickstart146() {
     await (new Promise((res) => setTimeout(res, 100)));
     wa.port.postMessage("pwn");
   });
-  document.getElementById("jbButton").innerHTML = "obj @ " + addr.toString(16) + "\n\ndouble array header: " + doubleArrayCellHeader.toString(16);
-  alert("Pwned!");
+  document.getElementById("jbButton").innerHTML = "Exploit Finished!";
 }
 
 const appHeight = () => {
