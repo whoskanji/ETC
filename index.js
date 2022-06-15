@@ -30,6 +30,7 @@ async function pwnMe() {
 			}
 		} else {
   		document.getElementById("jbButton").innerHTML = "Unsupported: " + navigator.userAgent;
+      alert("Uh-oh!\n\n" + navigator.userAgent + " is not supported.\n\nUse this on a compatible iOS device.");
 		}
   }
 }
