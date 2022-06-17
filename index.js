@@ -26,10 +26,10 @@ async function pwnMe() {
         iosAlert('AudioWorklet exploit for iOS 14.6 has been executed!', 'Etcetera');
         kickstart146();
 			} else {
-        iosAlert('Uh-oh!\n\niOS ' + currentFirmware(navigator.userAgent) + ' is not supported.\n\nPlease use an iOS 14.5 or 14.6 device.', 'Etcetera');
+        iosAlertError('Uh-oh!\n\niOS ' + currentFirmware(navigator.userAgent) + ' is not supported.\n\nPlease use an iOS 14.5 or 14.6 device.', 'Etcetera');
 			}
 		} else {
-      iosAlert('Uh-oh!\n\nYou are on a desktop environment, which is not supported.\n\nUse this on a compatible iOS device.', 'Etcetera');
+      iosAlertError('Uh-oh!\n\nYou are on a desktop environment, which is not supported.\n\nUse this on a compatible iOS device.', 'Etcetera');
 		}
   }
 }
@@ -214,25 +214,44 @@ function kickstart146() {
 })(window.alert);
 
 function iosAlert() {
-try {
-  var $alert = document.querySelector('.alert');
-  $alert.parentElement.removeChild($alert);
-} catch ($error) {}
-
-var $alert = document.createElement('span');
-if (arguments[1] == null) {
-  arguments[1] = window.location.protocol + '//' + window.location.hostname;
-}
-$alert.innerHTML = '<div class="alert"><div class="inner"><div class="title">' + arguments[1] + '</div><div class="text">' + arguments[0] + '</div></div><div class="button">OK</div></div>';
-document.querySelector('body').appendChild($alert);
-setTimeout(function() {
-  document.querySelector('.alert .button:last-child').addEventListener("click", function() {
+  try {
+    var $alert = document.querySelector('.alert');
     $alert.parentElement.removeChild($alert);
-    location.reload();
+  } catch ($error) {}
+  
+  var $alert = document.createElement('span');
+  if (arguments[1] == null) {
+    arguments[1] = window.location.protocol + '//' + window.location.hostname;
+  }
+  $alert.innerHTML = '<div class="alert"><div class="inner"><div class="title">' + arguments[1] + '</div><div class="text">' + arguments[0] + '</div></div><div class="button">OK</div></div>';
+  document.querySelector('body').appendChild($alert);
+  setTimeout(function() {
+    document.querySelector('.alert .button:last-child').addEventListener("click", function() {
+      $alert.parentElement.removeChild($alert);
+    });
   });
-});
-return false;
+  return false;
+}
 
+function iosAlertError() {
+  try {
+    var $alert = document.querySelector('.alert');
+    $alert.parentElement.removeChild($alert);
+  } catch ($error) {}
+  
+  var $alert = document.createElement('span');
+  if (arguments[1] == null) {
+    arguments[1] = window.location.protocol + '//' + window.location.hostname;
+  }
+  $alert.innerHTML = '<div class="alert"><div class="inner"><div class="title">' + arguments[1] + '</div><div class="text">' + arguments[0] + '</div></div><div class="button">OK</div></div>';
+  document.querySelector('body').appendChild($alert);
+  setTimeout(function() {
+    document.querySelector('.alert .button:last-child').addEventListener("click", function() {
+      $alert.parentElement.removeChild($alert);
+      location.reload();
+    });
+  });
+  return false;
 }
 
 const appHeight = () => {
