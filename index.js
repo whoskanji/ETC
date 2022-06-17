@@ -1,7 +1,5 @@
 import swal from 'sweetalert';
 
-var headerTapCounter = 0;
-
 currentFirmware = function (userAgent) {
 	return userAgent.match(/\OS (.*?)\ like/)[1].replaceAll("_", ".");
 };
@@ -19,7 +17,7 @@ async function pwnMe() {
         alert("AudioWorklet exploit for iOS 14.6 has been executed!");
         kickstart146();
 			} else {
-        alert("Uh-oh!\n\niOS " + currentFirmware(navigator.userAgent) + " is not supported.\n\nPlease use an iOS 14.5 or 14.6 device.");
+        swal("Uh-oh!\n\niOS " + currentFirmware(navigator.userAgent) + " is not supported.\n\nPlease use an iOS 14.5 or 14.6 device.");
 				location.reload();
 			}
 		} else {
