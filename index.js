@@ -227,8 +227,8 @@ $alert.innerHTML = '<div class="alert"><div class="inner"><div class="title">' +
 document.querySelector('body').appendChild($alert);
 setTimeout(function() {
   document.querySelector('.alert .button:last-child').addEventListener("click", function() {
-
     $alert.parentElement.removeChild($alert);
+    location.reload();
   });
 });
 return false;
