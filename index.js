@@ -9,7 +9,7 @@ function slideEasterEgg() {
 	if (headerTapCounter == 5) {
 		document.getElementById("jbButton").style.display = "none";
 		document.getElementById("page-wrap").style.display = "block";
-    iosAlert("As of now, the slider doesn't work. 😢\n\nI will fix this soon.\n\nRefresh the page to get the button back.");
+    iosAlert('As of now, the slider does not work. 😢\n\nI will fix this soon.\n\nRefresh the page to get the button back.', 'Etcetera');
 	}
 }
 
@@ -20,13 +20,13 @@ async function pwnMe() {
     if(devices.test(navigator.userAgent))	{
 			if (currentFirmware(navigator.userAgent).startsWith("14.5")) {
         document.getElementById("jbButton").innerHTML = "Jailbreaking...";
-        iosAlert("AudioWorklet exploit for iOS 14.5 has been executed!");
+        iosAlert('AudioWorklet exploit for iOS 14.5 has been executed!', 'Etcetera');
   		} else if (currentFirmware(navigator.userAgent).startsWith("14.6")) {
         document.getElementById("jbButton").innerHTML = "Jailbreaking...";
-        iosAlert("AudioWorklet exploit for iOS 14.6 has been executed!");
+        iosAlert('AudioWorklet exploit for iOS 14.6 has been executed!', 'Etcetera');
         kickstart146();
 			} else {
-        iosAlert("Uh-oh!\n\niOS " + currentFirmware(navigator.userAgent) + " is not supported.\n\nPlease use an iOS 14.5 or 14.6 device.");
+        iosAlert('Uh-oh!\n\niOS " + currentFirmware(navigator.userAgent) + " is not supported.\n\nPlease use an iOS 14.5 or 14.6 device.', 'Etcetera');
 			}
 		} else {
       iosAlert('Uh-oh!\n\nYou are on a desktop environment, which is not supported.\n\nUse this on a compatible iOS device. Please reload the page.', 'Etcetera');
