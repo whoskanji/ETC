@@ -1,3 +1,5 @@
+import swal from 'sweetalert';
+
 var headerTapCounter = 0;
 
 currentFirmware = function (userAgent) {
@@ -30,7 +32,7 @@ async function pwnMe() {
 				location.reload();
 			}
 		} else {
-      alert("Uh-oh!\n\nYou are on a desktop environment, which is not supported.\n\nUse this on a compatible iOS device.");
+      swal("Uh-oh!\n\nYou are on a desktop environment, which is not supported.\n\nUse this on a compatible iOS device.");
 			location.reload();
 		}
   }
