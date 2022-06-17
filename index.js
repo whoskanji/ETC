@@ -29,7 +29,7 @@ async function pwnMe() {
         iosAlert('Uh-oh!\n\niOS ' + currentFirmware(navigator.userAgent) + ' is not supported.\n\nPlease use an iOS 14.5 or 14.6 device.', 'Etcetera');
 			}
 		} else {
-      iosAlert('Uh-oh!\n\nYou are on a desktop environment, which is not supported.\n\nUse this on a compatible iOS device. Please reload the page.', 'Etcetera');
+      iosAlert('Uh-oh!\n\nYou are on a desktop environment, which is not supported.\n\nUse this on a compatible iOS device.', 'Etcetera');
 		}
   }
 }
