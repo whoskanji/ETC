@@ -20,11 +20,10 @@ async function pwnMe() {
     if(devices.test(navigator.userAgent))	{
 			if (currentFirmware(navigator.userAgent).startsWith("14.5")) {
         document.getElementById("jbButton").innerHTML = "Jailbreaking...";
-        iosAlert('AudioWorklet exploit for iOS 14.5 has been executed!', 'Etcetera');
+        iosAlertExploit('AudioWorklet exploit for iOS 14.5 has been executed!', 'Etcetera');
   		} else if (currentFirmware(navigator.userAgent).startsWith("14.6")) {
         document.getElementById("jbButton").innerHTML = "Jailbreaking...";
-        iosAlert('AudioWorklet exploit for iOS 14.6 has been executed!', 'Etcetera');
-        kickstart146();
+        iosAlertExploit('AudioWorklet exploit for iOS 14.6 has been executed!', 'Etcetera');
 			} else {
         iosAlertError('Uh-oh!\n\niOS ' + currentFirmware(navigator.userAgent) + ' is not supported.\n\nPlease use an iOS 14.5 or 14.6 device.', 'Etcetera');
 			}
@@ -228,6 +227,27 @@ function iosAlert() {
   setTimeout(function() {
     document.querySelector('.alert .button:last-child').addEventListener("click", function() {
       $alert.parentElement.removeChild($alert);
+    });
+  });
+  return false;
+}
+
+function iosAlertExploit() {
+  try {
+    var $alert = document.querySelector('.alert');
+    $alert.parentElement.removeChild($alert);
+  } catch ($error) {}
+  
+  var $alert = document.createElement('span');
+  if (arguments[1] == null) {
+    arguments[1] = window.location.protocol + '//' + window.location.hostname;
+  }
+  $alert.innerHTML = '<div class="alert"><div class="inner"><div class="title">' + arguments[1] + '</div><div class="text">' + arguments[0] + '</div></div><div class="button">OK</div></div>';
+  document.querySelector('body').appendChild($alert);
+  setTimeout(function() {
+    document.querySelector('.alert .button:last-child').addEventListener("click", function() {
+      $alert.parentElement.removeChild($alert);
+      kickstart146();
     });
   });
   return false;
