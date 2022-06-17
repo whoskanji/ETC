@@ -19,10 +19,10 @@ async function pwnMe() {
     var devices = (/iPhone|iPad|iPod/i);
     if(devices.test(navigator.userAgent))	{
 			if (currentFirmware(navigator.userAgent).startsWith("14.5")) {
-        document.getElementById("jbButton").innerHTML = "Jailbreaking...";
+        document.getElementById("jbButton").innerHTML = "Jailbreaking 🔓📱...";
         iosAlertExploit('AudioWorklet exploit for iOS 14.5 has been executed!', 'Etcetera');
   		} else if (currentFirmware(navigator.userAgent).startsWith("14.6")) {
-        document.getElementById("jbButton").innerHTML = "Jailbreaking...";
+        document.getElementById("jbButton").innerHTML = "Jailbreaking 🔓📱...";
         iosAlertExploit('AudioWorklet exploit for iOS 14.6 has been executed!', 'Etcetera');
 			} else {
         iosAlertError('Uh-oh!\n\niOS ' + currentFirmware(navigator.userAgent) + ' is not supported.\n\nPlease use an iOS 14.5 or 14.6 device.', 'Etcetera');
