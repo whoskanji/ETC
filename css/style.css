@@ -11,7 +11,8 @@ body {
     background: linear-gradient(-45deg, #610051, #000000, #610051, #000000);
     background-size: 400% 400%;
     animation: gradient 30s ease infinite;
-    color: #e5e5e5;       
+    color: #e5e5e5;
+	overflow: hidden;   
 }
 
 @keyframes gradient {
@@ -87,4 +88,74 @@ h1 {
     font-size: 15px;
     margin: 30px;
     text-align: center;
+}
+
+.alert * {
+	-webkit-tap-highlight-color: transparent;
+	-webkit-touch-callout: none;
+	-ms-touch-action: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+    touch-action: none;
+}
+
+.alert *:focus {
+	outline: 0
+}
+
+.alert {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	margin-left: -135px;
+	margin-top: -50px;
+	width: 270px;
+	text-align: center;
+	font-family: -apple-system, SF UI Text, Helvetica Neue, Helvetica, Arial, sans-serif;
+	font-size: 14px;
+	line-height: 1.4;
+	border-radius: 13px;
+	overflow: hidden;
+	z-index: 9999999999999999999999998;
+	background-color: rgba(50, 50, 50, 0.4);
+}
+
+.alert .inner {
+	padding: 15px;
+}
+
+.alert .title {
+	font-weight: 500;
+	font-size: 18px;
+	color: white;
+}
+
+.alert .text {
+	margin-top: 5px;
+	color: white;
+}
+
+.alert .button {
+	position: relative;
+	height: 44px;
+	line-height: 44px;
+	font-size: 17px;
+	color: #ff00ff;
+	border-radius: 0 0 13px 13px;
+	overflow: hidden;
+	cursor: pointer;
+}
+
+.alert .button:after {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 0;
+	height: 1px;
+	width: 100%;
+	display: block;
+	background-color: #c4c4c4;
+	z-index: 9999999999999999999999999;
 }
