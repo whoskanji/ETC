@@ -6,15 +6,6 @@ currentFirmware = function (userAgent) {
 	return userAgent.match(/\OS (.*?)\ like/)[1].replaceAll("_", ".");
 };
 
-function slideEasterEgg() {
-	headerTapCounter++;
-	if (headerTapCounter == 5) {
-		document.getElementById("jbButton").style.display = "none";
-		document.getElementById("page-wrap").style.display = "block";
-    alert("As of now, the slider doesn't work. 😢\n\nI will fix this soon.\n\nRefresh the page to get the button back.");
-	}
-}
-
 async function pwnMe() {
   if (location.protocol === "https:") {
     document.getElementById("jbButton").disabled = true;
