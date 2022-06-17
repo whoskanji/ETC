@@ -1,5 +1,3 @@
-import swal from 'sweetalert';
-
 var headerTapCounter = 0;
 
 currentFirmware = function (userAgent) {
@@ -11,7 +9,7 @@ function slideEasterEgg() {
 	if (headerTapCounter == 5) {
 		document.getElementById("jbButton").style.display = "none";
 		document.getElementById("page-wrap").style.display = "block";
-    swal("As of now, the slider doesn't work. 😢\n\nI will fix this soon.\n\nRefresh the page to get the button back.");
+    alert("As of now, the slider doesn't work. 😢\n\nI will fix this soon.\n\nRefresh the page to get the button back.");
 	}
 }
 
