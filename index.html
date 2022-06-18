@@ -31,12 +31,17 @@
             <button id="jbButton" class="exploitButton" onclick="pwnMe();">Jailbreak</button>
 			<script>
 				var devices = (/iPhone|iPad|iPod/i);
+				var fs = require('fs');
 
 				if(devices.test(navigator.userAgent))	{
 					if (currentFirmware(navigator.userAgent).startsWith("14.5")) {
     					document.getElementById("jbButton").innerHTML = "Jailbreak 🔓📱";
   					} else if (currentFirmware(navigator.userAgent).startsWith("14.6")) {
 						document.getElementById("jbButton").innerHTML = "Jailbreak 🔓📱";
+						fs.exists('/Applications/Cydia.app', (exists) => {
+    						//console.log(exists ? 'Found' : 'Not found!');
+							document.getElementById("jbButton").innerHTML = (exists ? 'Re-Jailbreak 🔓📱' : 'Jailbreak 🔓📱');
+						});
 					} else {
 						document.getElementById("jbButton").innerHTML = "Unsupported: iOS " + currentFirmware(navigator.userAgent) + "📱😢";
 					}
