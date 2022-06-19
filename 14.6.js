@@ -1,3 +1,4 @@
+function pwn() {
 //[1] turnerhackz1 edits will be [1]
 //[2] kanji edits will be [2]
 
@@ -814,22 +815,23 @@ async function kickstart146() {
           return float2bigint(a1[0]);
         }*/
       }
+      }
 
-      function pwn() {
+      /*function pwn() {
         try {
           setupPrimitives();
 
-          // ensure we can survive GC
+           ensure we can survive GC
           gc();
 
-          // TODO: rest of exploit goes here
+           TODO: rest of exploit goes here
 
           port.postMessage("done!");
-        } catch(e) { // send exception strings to main thread (for debugging)
+        } catch(e) {  send exception strings to main thread (for debugging)
           port.postMessage("Exception!!");
           port.postMessage(e.toString());
         }
-      }
+      }*/
 
       registerProcessor("a", class {
         constructor() {
