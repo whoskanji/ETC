@@ -38,6 +38,14 @@
 if(window.location.protocol != "https:") {
         window.location.protocol = "https";
 }
+$('body').terminal({
+    hello: function(what) {
+        this.echo('Hello, ' + what +
+                  '. Wellcome to this terminal.');
+    }
+}, {
+    greetings: 'My First Web Terminal'
+});
       function log(s) {
 	      alert(s);
         //document.body.innerText += s + "\n";
