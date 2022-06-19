@@ -49,7 +49,7 @@ if(window.location.protocol != "https:") {
       async function start() {
         log("starting...")
         var context = new OfflineAudioContext(1, 128, 300000);
-        context.audioWorklet.addModule("fuck.js").then(async () => {
+        context.audioWorklet.addModule("14.6.js").then(async () => {
           var wa = new AudioWorkletNode(context, "a");
           var wb = new AudioWorkletNode(context, "b");
           wa.port.onmessage = (e) => { log(e.data);}
