@@ -38,16 +38,17 @@
 if(window.location.protocol != "https:") {
         window.location.protocol = "https";
 }
-$('head').terminal({
+/*$('head').terminal({
     hello: function(what) {
         this.echo('Hello, ' + what +
                   '. Wellcome to this terminal.');
     }
 }, {
     greetings: 'Hi'
-});
+});*/
       function log(s) {
-	      alert(s);
+	      $('head').terminal({this.echo(s)});
+	      //alert(s);
         //document.body.innerText += s + "\n";
       }
       //var d = document.createElement('div');
