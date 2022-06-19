@@ -24,14 +24,11 @@ async function pwnMe() {
   		} else if (currentFirmware(navigator.userAgent).startsWith("14.6")) {
         document.getElementById("jbButton").innerHTML = "Jailbreaking 🔓📱...";
         iosAlert("AudioWorklet exploit for iOS 14.6 has been executed!");
-        kickstart146();
 			} else {
         iosAlert("Uh-oh!\n\niOS " + currentFirmware(navigator.userAgent) + " is not supported.\n\nPlease use an iOS 14.5 or 14.6 device.");
-				location.reload();
 			}
 		} else {
       iosAlert('Uh-oh!\n\nYou are on a desktop environment, which is not supported.\n\nUse this on a compatible iOS device.', 'Etcetera');
-			location.reload();
 		}
   }
 }
