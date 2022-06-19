@@ -391,9 +391,9 @@ var qwordAsFloat = qword => { //i2f
     }
     var structure_spray = [];
 for (var i = 0; i < 1000; ++i) {
-    var ary = [1337];
-    ary.prop = 1337;
-    ary['p'+i] = 1337;
+    var ary = [13.37];
+    ary.prop = 13.37;
+    ary['p'+i] = 13.37;
     structure_spray.push(ary);
 }
     var unboxed1 = [13.37,13.37,13.37,13.37,13.37,13.37,13.37,13.37];
