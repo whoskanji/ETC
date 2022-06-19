@@ -616,8 +616,8 @@ for (var i = 0; i < 1000; ++i) {
     print("testing arbitrary r/w capabilities")
     var tester = {a: 0x1337};
     var adddr = addrof(tester);
-    var val = stage2.read64(adddr + 8);
-    print("val should be 0x1337 if not it failed" + val);
+    var val = stage2.read64(adddr + 0x10);
+    print("val should be 0x1337 if not it failed" + hex1(val));
     
     /*// "Point" refers to changing the given array's butterfly
     // hax[1] = victim[]'s bfly, meaning that we can point victim[] using hax[1]
