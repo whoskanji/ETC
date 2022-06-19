@@ -340,7 +340,7 @@ function sleep( sleepDuration ){
     var now = new Date().getTime();
     while(new Date().getTime() < now + sleepDuration){ /* do nothing */ } 
 }
-function gc() {
+function gc1() {
     for (let i = 0; i < 0x10; i++) {
             new ArrayBuffer(0x1000000);
         }
