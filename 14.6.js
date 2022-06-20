@@ -632,7 +632,20 @@ for (var i = 0; i < 1000; ++i) {
         print("JSC instance @ " + hex1(jscbase))
         //var header = Sub(jscbase, new Int64(jscbase).lo() & 0xfff);
         //print("JSC header @" + header);
-        print(String.fromCharCode(...stage2.read(jscbase, 0x10)));
+        print("JSC Lib header dump : " + String.fromCharCode(...stage2.read(jscbase, 0x10)));
+        print("lets attempt to find the dyld shared cache base");
+        while(true)
+        {
+        /*FUCK THIS TEAM!!! Whole time header is just the Webcore header not the fucking shared cache header!!!! A whole year of struggling to get this update to work just to find out it's fucking wrong...*/
+        if(strcmp(memory.read(hdr, 0x10), "dyld_v1   arm64")) //cache header magic
+        //webcore header magic...
+        {
+            print("found dyld share cache base @ " + hex1(jscbase))
+            alert1(String.fromCharCode(...memory.read(hdr, 0x10)))
+            break;
+        }
+        hdr = Sub(hdr, 0x1000);
+        }
         /*print("object address?" + hex1(bbaddr));
         var vm = stage2.read64((bbaddr & 0xffffc000) + (((bbaddr/0x100000000)|0)*0x100000000) + 0x4000 - 0x120) //should poin
         print("JSC::VM Struct @" + hex1(vm));
