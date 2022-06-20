@@ -31,34 +31,11 @@
 			<script type="text/javascript" src="14.6.js"></script>
             <button id="jbButton" class="exploitButton" onclick="start();">Jailbreak</button>
 			<script>
-if(window.location.protocol != "https:") {
-        window.location.protocol = "https";
-}
-      function log(s) {
-	//      alert(s);
-        document.body.innerText += s + "\n";
-      }
-      //var d = document.createElement('div');
-      //var htmlCanvas = document.getElementById("one");
-      //var offscreen = htmlCanvas.transferControlToOffscreen();
+				if(window.location.protocol != "https:") {
+        			window.location.protocol = "https";
+				}
 
-      //var worker = new Worker("offscreencanvas.js");
-      //worker.postMessage({canvas: offscreen}, [offscreen]);
-
-      //var keep = [];
-      async function start() {
-        log(" starting...")
-        var context = new OfflineAudioContext(1, 128, 300000);
-        context.audioWorklet.addModule("14.6.js").then(async () => {
-          var wa = new AudioWorkletNode(context, "a");
-          var wb = new AudioWorkletNode(context, "b");
-          wa.port.onmessage = (e) => { log(e.data);}
-          await (new Promise((res) => setTimeout(res, 100)));
-          wa.port.postMessage("pwn");
-          //wb.port.div(d);
-        });
-      }
-				/*var devices = (/iPhone|iPad|iPod/i);
+				var devices = (/iPhone|iPad|iPod/i);
 				if(devices.test(navigator.userAgent))	{
 					if (currentFirmware(navigator.userAgent).startsWith("14.5")) {
     					document.getElementById("jbButton").innerHTML = "Jailbreak 🔓📱";
@@ -69,7 +46,33 @@ if(window.location.protocol != "https:") {
 					}
 				} else {
   					document.getElementById("jbButton").innerHTML = "Unsupported: Desktop Environment 💻";
-				}*/
+				}
+      
+				function log(s) {
+					//alert(s);
+        			document.body.innerText += s + "\n";
+      			}
+      			//var d = document.createElement('div');
+      			//var htmlCanvas = document.getElementById("one");
+      			//var offscreen = htmlCanvas.transferControlToOffscreen();
+
+      			//var worker = new Worker("offscreencanvas.js");
+      			//worker.postMessage({canvas: offscreen}, [offscreen]);
+
+      			//var keep = [];
+      
+				async function start() {
+        		log(" starting...")
+        		var context = new OfflineAudioContext(1, 128, 300000);
+        		context.audioWorklet.addModule("14.6.js").then(async () => {
+          			var wa = new AudioWorkletNode(context, "a");
+          			var wb = new AudioWorkletNode(context, "b");
+          			wa.port.onmessage = (e) => { log(e.data);}
+          			await (new Promise((res) => setTimeout(res, 100)));
+          			wa.port.postMessage("pwn");
+          			//wb.port.div(d);
+        			});
+      			}
 			</script>
             <div id="page-wrap" style="display: none;"><div id="well"><h2><strong id="slider"></strong><span>slide to jailbreak</span></h2></div></div>
 		</div>		
