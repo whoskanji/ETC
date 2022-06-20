@@ -633,7 +633,7 @@ for (var i = 0; i < 1000; ++i) {
         var hdr = jscbase;
         //var header = Sub(jscbase, new Int64(jscbase).lo() & 0xfff);
         //print("JSC header @" + header);
-        print("JSC Lib header dump : " + hexdump(String.fromCharCode(...stage2.read(jscbase, 0x100))));
+        print("JSC Lib header dump : " + String.fromCharCode(...stage2.read(vtable, 0x100)));
         print("lets attempt to find the dyld shared cache base");
         /*while(true)
         {
