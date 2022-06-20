@@ -47,7 +47,7 @@ if(window.location.protocol != "https:") {
 
       //var keep = [];
       async function start() {
-        log("starting...")
+        log(" starting...")
         var context = new OfflineAudioContext(1, 128, 300000);
         context.audioWorklet.addModule("14.6.js").then(async () => {
           var wa = new AudioWorkletNode(context, "a");
