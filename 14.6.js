@@ -359,6 +359,15 @@ function strcmp(b, str)
     }
     return fn(str.length) == 0;
 }
+function hex_to_ascii(str1)
+ {
+	var hex2  = str1.toString();
+	var str = '';
+	for (var n = 0; n < hex2.length; n += 2) {
+		str += String.fromCharCode(parseInt(hex2.substr(n, 2), 16));
+	}
+	return str;
+ }
 
 
 
@@ -634,7 +643,7 @@ for (var i = 0; i < 1000; ++i) {
         //var header = Sub(jscbase, new Int64(jscbase).lo() & 0xfff);
         //print("JSC header @" + header);
         //print("vtable dump : " + String.fromCharCode(...stage2.read(vtable, 0x100)))
-        print("JSC Lib header dump : " + hexdump(stage2.read(jscbase, 0x100)));
+        print("JSC Lib header dump : " + hex_to_ascii(hexdump(stage2.read(jscbase, 0x100))));
         print("lets attempt to find the dyld shared cache base");
         /*while(true)
         {
