@@ -638,12 +638,15 @@ for (var i = 0; i < 1000; ++i) {
         var vtable = stage2.read64(m_runloop);
         var jscbase = stage2.read64(vtable);
         print("vtable @ " + hex1(vtable));
-        print("JSC instance @ " + hex1(jscbase))
-        var hdr = jscbase;
+        print("JSC __TEXT::text instance @ " + hex1(jscbase))
+	var header = Sub(jscbase, new Int64(jscbase).lo() & 0xfff);
+	print("JSC __TEXT header @" + header);
+	
+        var hdr = header;
         //var header = Sub(jscbase, new Int64(jscbase).lo() & 0xfff);
         //print("JSC header @" + header);
         //print("vtable dump : " + String.fromCharCode(...stage2.read(vtable, 0x100)))
-        print("JSC Lib header dump : " + ab2str(stage2.read(jscbase, 0x100)));
+        //print("JSC Lib header dump : " + ab2str(stage2.read(jscbase, 0x100)));
         print("lets attempt to find the dyld shared cache base");
 	while(true) {
 		jscbase -= 0x1000;
