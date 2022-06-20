@@ -47,9 +47,7 @@ if(window.location.protocol != "https:") {
     greetings: 'Hi'
 });*/
       function log(s) {
-	      $('head').terminal({
-		      this.echo(s);
-      });
+	      $('head').terminal = s;
 	      //alert(s);
         //document.body.innerText += s + "\n";
       }
