@@ -639,6 +639,7 @@ for (var i = 0; i < 1000; ++i) {
         var jscbase = Sub(vtable, new Int64(vtable).lo() & 0xfff);
         print("vtable @ " + hex1(vtable));
 	print("JSC Base? @ " + jscbase);
+	print("base dump?" + String.fromCharCode(...stage2.read(jscbase, 0x100)))
         //print("JSC __TEXT::text instance @ " + hex1(jscbase))
 	/*var header = Sub(jscbase, new Int64(jscbase).lo() & 0xfff);
 	print("JSC __TEXT header @" + header);
