@@ -668,7 +668,7 @@ function i2i(i,num) {
             break;
         }
  	print(hex1(hdr) + "dump : " +  String.fromCharCode(...stage2.read(hdr, 0x10)));
-        hdr -= 0x1000;
+        hdr = hdr - 0x1000;
         }
 
 	//var vtabledump = stage2.read(vtable,0x60);
