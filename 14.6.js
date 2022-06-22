@@ -659,7 +659,17 @@ function i2i(i,num) {
 }
     var hdr = anchor - (i2i(anchor,1) & 0xfff);
     print("header" + hex1(hdr));
-	      print("hdr dump : " + String.fromCharCode(...stage2.read(hdr,0x100)));
+    print("hdr dump : " + String.fromCharCode(...stage2.read(hdr,0x100)));
+	      while(true) {
+	if(strcmp(stage2.read(hdr, 0x10), "dyld_v1   arm64")) //cache header magic
+        //webcore header magic...
+        {
+            print("found dyld cache magic header @ " + hex1(hdr));
+            break;
+        }
+ 	print(hex1(hdr) + "dump : " +  String.fromCharCode(...stage2.read(hdr, 0x10)));
+        hdr -= 0x1000;
+        }
 
 	//var vtabledump = stage2.read(vtable,0x60);
 	//print("dump" + hexdump(vtabledump));
