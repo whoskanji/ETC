@@ -657,10 +657,10 @@ function i2i(i,num) {
     i32[1] = i / BASE32
     return i[num]
 }
-    var hdr = anchor - (i2i(anchor,1) & 0xfff);
+    var hdr = anchor - (i2i(anchor,0) & 0xfff);
     print("header" + hex1(hdr));
     print("hdr dump : " + String.fromCharCode(...stage2.read(hdr,0x100)));
-	      while(true) {
+	while(true) {
 	if(strcmp(stage2.read(hdr, 0x10), "dyld_v1   arm64")) //cache header magic
         //webcore header magic...
         {
@@ -668,6 +668,10 @@ function i2i(i,num) {
             break;
         }
  	print(hex1(hdr) + "dump : " +  String.fromCharCode(...stage2.read(hdr, 0x10)));
+	if (hdr < 0x180000000) {
+		print("finding cache header failed" + hex1(hdr))
+		break;
+	}
         hdr = hdr - 0x1000;
         }
 
