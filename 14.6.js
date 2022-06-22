@@ -641,7 +641,7 @@ for (var i = 0; i < 1000; ++i) {
         var vtable = stage2.read64(m_runloop);
         print("vtable @ " + hex1(vtable));
 	stage2.write64(vtable,0x7777);
-	gc();
+	//gc();
         //stage.passGC();
         //gc();*/
         //print(hexdump(stage2.read(vtable,0x100)));
