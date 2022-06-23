@@ -687,7 +687,7 @@ function i2i(i,num) {
             print("addr : " + hex1(hdr) + String.fromCharCode(...stage2.read(hdr, 0x10)))
             break;
         }
-        hdr = hdr - 0x1000;
+        hdr = Sub(hdr, 0x1000);
         }
 	     /* var cachestart = 0x180000000 + cacheslide; //Shared Region:                    4GB, address: 0x180000000 -> 0x280000000
 	      print("cachedump @ " + hex1(cachestart) + " : " + String.fromCharCode(...stage2.read(cachestart,0x100)));*/
