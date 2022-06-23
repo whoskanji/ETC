@@ -670,7 +670,7 @@ function i2i(i,num) {
 00000001daffd658         db  0x00 ; '.' */
 	      var unslidvtable = 0x1daffd658;
 	      var cacheslide = vtable - unslidvtable;
-	      print("cache slide" + hex1(cache slide));
+	      print("cache slide" + hex1(cacheslide));
 	
 
       }
