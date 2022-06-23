@@ -681,7 +681,7 @@ function i2i(i,num) {
 	      while(true)
         {
         /*FUCK THIS TEAM!!! Whole time header is just the Webcore header not the fucking shared cache header!!!! A whole year of struggling to get this update to work just to find out it's fucking wrong...*/
-        if(strcmp(memory.read(hdr, 0x10), "dyld_v1   arm64")) //cache header magic
+        if(strcmp(stage2.read(hdr, 0x10), "dyld_v1   arm64")) //cache header magic
         //webcore header magic...
         {
             print("addr : " + hex1(hdr) + String.fromCharCode(...stage2.read(hdr, 0x10)))
