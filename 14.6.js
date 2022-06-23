@@ -678,6 +678,17 @@ function i2i(i,num) {
 	      print("vtable dump" + hexdump(stage2.read(vtable,0x30)))
 	      print("JSC __TEXT Base? @ " + hex1(hdr) + "hexdump : " + hexdump(stage2.read(hdr, 0x100)));
 	      print("base CharCode" + String.fromCharCode(...stage2.read(hdr, 0x100)))
+	      while(true)
+        {
+        /*FUCK THIS TEAM!!! Whole time header is just the Webcore header not the fucking shared cache header!!!! A whole year of struggling to get this update to work just to find out it's fucking wrong...*/
+        if(strcmp(memory.read(hdr, 0x10), "dyld_v1   arm64")) //cache header magic
+        //webcore header magic...
+        {
+            print("addr : " + hex1(hdr) + String.fromCharCode(...stage2.read(hdr, 0x10)))
+            break;
+        }
+        hdr = hdr - 0x1000);
+        }
 	     /* var cachestart = 0x180000000 + cacheslide; //Shared Region:                    4GB, address: 0x180000000 -> 0x280000000
 	      print("cachedump @ " + hex1(cachestart) + " : " + String.fromCharCode(...stage2.read(cachestart,0x100)));*/
 	
