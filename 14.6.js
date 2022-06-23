@@ -671,6 +671,9 @@ function i2i(i,num) {
 	      var unslidvtable = 0x1daffd658;
 	      var cacheslide = vtable - unslidvtable;
 	      print("cache slide" + hex1(cacheslide));
+	      if (cacheslide > 0x2F8A0000) {
+		      print("cache slide is larger than 0x2F8A0000 fail!!!")
+	      }
 	
 
       }
