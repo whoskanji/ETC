@@ -586,13 +586,13 @@ for (var i = 0; i < 1000; ++i) {
             var v;
 
             for (i = 0; i + 8 < length; i += 8) {
-                v = this.readInt64(addr + i).bytes()
+                v = new Int64(this.read64(addr + i)).bytes()
                 for (var j = 0; j < 8; j++) {
                     a[i+j] = v[j];
                 }
             }
 
-            v = this.readInt64(addr + i).bytes()
+            v = new Int64(this.readInt64(addr + i)).bytes()
             for (var j = i; j < length; j++) {
                 a[j] = v[j - i];
             }
