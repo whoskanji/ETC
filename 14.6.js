@@ -579,20 +579,20 @@ for (var i = 0; i < 1000; ++i) {
             for (var i = 0; i < ints.length; i++)
                 this.write64(Add(addr, 2 * i), ints[i]);
         },
-        
         read(addr, length) {
+	    addr = new Int64(addr);
             var a = new Array(length);
             var i;
             var v;
 
             for (i = 0; i + 8 < length; i += 8) {
-                v = new Int64(this.read64(addr + i)).bytes()
+                v = this.readInt64(Add(addr + i)).bytes()
                 for (var j = 0; j < 8; j++) {
                     a[i+j] = v[j];
                 }
             }
 
-            v = new Int64(this.read64(addr + i)).bytes()
+            v = this.readInt64(Add(addr + i)).bytes()
             for (var j = i; j < length; j++) {
                 a[j] = v[j - i];
             }
