@@ -592,7 +592,7 @@ for (var i = 0; i < 1000; ++i) {
                 }
             }
 
-            v = this.read64(addr + i).bytes()
+            v = this.readInt64(addr + i).bytes()
             for (var j = i; j < length; j++) {
                 a[j] = v[j - i];
             }
