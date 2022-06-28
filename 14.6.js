@@ -649,7 +649,7 @@ for (var i = 0; i < 1000; ++i) {
 	print('JSC header @' + jsc);  //dyld_cache_header
         while(true)
         {
-        if(strcmp(memory.read(jsc, 0x10), "dyld_v1   arm64")) //cache header magic
+        if(strcmp(memory.read(jsc, 0x10), "dyld_v1   arm64" || "dyld_v1   arm64e")) //cache header magic
         //webcore header magic...
         {
             print("found it @ " + jsc + ":" + String.fromCharCode(...memory.read(jsc, 0x10)))
