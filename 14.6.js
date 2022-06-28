@@ -636,9 +636,9 @@ for (var i = 0; i < 1000; ++i) {
    memory = stage2;
 	var sinFuncAddr = memory.addrof(Math.sin);
         print("Math.sin() @ " + sinFuncAddr);
-        var executableAddr = memory.readInt64(Add(sinFuncAddr, 24));
+        var executableAddr = memory.readInt64(Add(sinFuncAddr, 32));
         print("Math.sin() ExecutableAddr @ " + executableAddr);
-        var jitCodeAddr = memory.read64(Add(executableAddr, 24));
+        var jitCodeAddr = memory.read64(Add(executableAddr, 32));
 	print("Math.sin() jitCodeAddr @ " + jitCodeAddr);
         
         /*var vtab = memory.readInt64(jitCodeAddr);
