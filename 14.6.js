@@ -3,6 +3,26 @@
 //
 // Copyright (c) 2016 Samuel Groß
 //
+function pad_left(s, c, n) {
+    s_ = s;
+
+    if (s_.length < n) {
+        s_ = c.repeat(n - s_.length) + s_;
+    }
+
+    return s_;
+}
+function prim_hexdump(buf) {
+    s = "";
+
+    for (i = 0; i < buf.length; i++) {
+        val = buf[i];
+        s += pad_left(val.toString(16), "0", 2);
+    }
+
+    return s;
+}
+
 
 // Return the hexadecimal representation of the given byte.
 function hex(b) {
@@ -725,8 +745,8 @@ Proto:0x10a0253e8, Leaf]), StructureID: 11704"*/
 	var objaddr = stage2.addrof(a);
 	var footeraddr = "0x" + ((objaddr & 0xfffc0000) + (((objaddr/0x100000000)|0)*0x100000000)+0x4000-0x130).toString(16);
 	print("footeraddr @ " + footeraddr);
-	var vmstruct = memory.read64(footeraddr+0x8);
-	print("vmstruct @ " + vmstruct);
+	var vmstruct = memory.read(footeraddr,0x40);
+	print("vmstruct @ " + prim_hexdump(vmstruct));
 	/*var m_runloop = memory.readInt64(Add(vmstruct,0x10));
 	print("m_runloop @ " + m_runloop);
 	var vtable = memory.readInt64(m_runloop);
