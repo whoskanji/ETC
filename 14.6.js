@@ -640,7 +640,7 @@ for (var i = 0; i < 1000; ++i) {
         var executableAddr = memory.readInt64(Add(sinFuncAddr,24));
 	//print("executableaddr @ " + executableAddr);
         print("Math.sin() ExecutableAddr @ " + executableAddr); 
-        var jitCodeAddr = memory.read64(Add(executableAddr , 24));
+        var jitCodeAddr = memory.readInt64(Add(executableAddr , 24));
 	print("Math.sin() NativeJITCodeAddr @ " + jitCodeAddr);
         
         /*var vtab = memory.read64(jitCodeAddr , 0);
