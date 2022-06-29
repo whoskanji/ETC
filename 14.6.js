@@ -596,7 +596,7 @@ for (var i = 0; i < 1000; ++i) {
                 this.write64(Add(addr, 2 * i), ints[i]);
         },
         read(addr, length) {
-	    addr = new Int64(addr);
+	    //addr = new Int64(addr);
             var a = new Array(length);
             var i;
             var v;
