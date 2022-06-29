@@ -138,14 +138,14 @@ function Int64(v) {
     // Return a double whith the same underlying bit representation.
     this.asDouble = function() {
         // Check for NaN
-        if (bytes[7] == 0xff && (bytes[6] == 0xfc || bytes[6] == 0xfc))
+        if (bytes[7] == 0xff && (bytes[6] == 0xff || bytes[6] == 0xfc))
             throw new RangeError("Integer can not be represented by a double");
 
         return Struct.unpack(Struct.float64, bytes);
     };
 
     // Return a javascript value with the same underlying bit representation.
-    // This is only possible for integers in the range [0x0001000000000000, 0xffff000000000000)
+    // This is only possible for integers in the range [0x0002000000000000, 0xfffc000000000000)
     // due to double conversion constraints.
     this.asJSValue = function() {
         if ((bytes[7] == 0 && bytes[6] == 0) || (bytes[7] == 0xff && bytes[6] == 0xfe))
@@ -637,8 +637,8 @@ for (var i = 0; i < 1000; ++i) {
    	memory = stage2;
 	var sinFuncAddr = addrof(Math.sin);
         print("Math.sin() @ " + sinFuncAddr);
-        var executableAddr = memory.read(sinFuncAddr,0x40);
-	print(memory.read(sinFuncAddr,0x40));
+        var executableAddr = memory.readInt64(sinFuncAddr);
+	print("executableaddr @ " + executableAddr);
         /*print("Math.sin() ExecutableAddr @ " + executableAddr); 
         var jitCodeAddr = memory.read64(executableAddr , 3);
 	print("Math.sin() NativeJITCodeAddr @ " + jitCodeAddr);
