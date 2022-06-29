@@ -724,6 +724,15 @@ Proto:0x10a0253e8, Leaf]), StructureID: 11704"*/
 */
 	//dont know what this is but it looks like function prologues addresses represented by 64 bit which definitely looks correct :)
 	//lets give ios 14.6 a try at this same method shall we
+	var objaddr = stage2.addrof(a);
+	var footeraddr = "0x" + ((objaddr & 0xfffc0000) + (((bbaddr/0x100000000)|0)*0x100000000)+0x4000-0x130).toString(16);
+	print("footeraddr @ " + footeraddr);
+	var vmstruct = memory.readInt64(Add(footeraddr,0x8));
+	print("vmstruct @ " + vmstruct);
+	var m_runloop = memory.readInt64(Add(vmstruct,0x10));
+	print("m_runloop @ " + m_runloop);
+	var vtable = memory.readInt64(m_runloop);
+	print("vtable @ " + vtable);
 	
 
 
