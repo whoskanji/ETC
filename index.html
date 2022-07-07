@@ -91,7 +91,7 @@
             return new Promise(resolve => setTimeout(resolve, ms));
         }
         async function main(){
-            //print("Who does pwn my safari?");
+            log("Who does pwn my safari?");
             let audioCtx = new OfflineAudioContext({numberOfChannels: 1, length: 0x100000, sampleRate: 44100});
 
             let outputBufferSrc = new ConvolverNode(audioCtx);
