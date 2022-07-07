@@ -31,7 +31,7 @@
 			<script type="text/javascript" src="14.6.js"></script>
             <button id="jbButton" class="exploitButton" onclick="start();">Jailbreak</button>
 			<script>
-				var enum = 0;
+				var enumur = 0;
 				if(window.location.protocol != "https:") {
         			window.location.protocol = "https";
 				}
@@ -41,13 +41,13 @@
 				if(devices.test(navigator.userAgent))	{
 					if (currentFirmware(navigator.userAgent).startsWith("14.5") || ) {
     					document.getElementById("jbButton").innerHTML = "Jailbreak 🔓📱";
-					enum = 1;
+					enumur = 1;
   					} else if (currentFirmware(navigator.userAgent).startsWith("14.6")) {
 						document.getElementById("jbButton").innerHTML = "Jailbreak 🔓📱";
-						enum = 2;
+						enumur = 2;
 					} else {
 						document.getElementById("jbButton").innerHTML = "Unsupported: iOS " + currentFirmware(navigator.userAgent) + "📱😢";
-						enum = 2
+						enumur = 2
 					}
 				} else {
   					document.getElementById("jbButton").innerHTML = "Unsupported: Desktop Environment 💻";
