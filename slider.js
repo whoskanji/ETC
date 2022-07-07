@@ -11,11 +11,11 @@ window.addEventListener('load', function()
             //logo.parentNode.removeChild(logo);
             //document.body.className = 'wait';
             //document.getElementById('notice').textContent = 'Running exploit...';
-            document.body.innerText += "Running Exploit" + "\n";
+            //document.body.innerText += "Running Exploit" + "\n";
 
             window.setTimeout(function(){
                 window.go();
-            }, 10);
+            }, 5);
         },
     };
 
