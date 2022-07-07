@@ -148,7 +148,7 @@
             let originNode = new AudioWorkletNode(audioCtx, 'OrigineWorklet',{numberOfInputs:0, numberOfOutputs:1});
             let originNode2 = new AudioWorkletNode(audioCtx, 'OrigineWorklet2',{numberOfInputs:0, numberOfOutputs:1});
             //return 0;
-            let source = new AudioBufferSourceNode(audioCtx);
+            let source = audioCtx.createBufferSource();
             let myArrayBuffer = audioCtx.createBuffer(1, 128, audioCtx.sampleRate);
             await sleep(500);
             //alert();
@@ -170,7 +170,7 @@
 
                 for(var i = 0; i < leak.length; i ++){
                     if(leak[i] != 0)
-                        (`[${i}] : ` + floatAsQword(leak[i]).toString(16));
+                        log("leaking " + `[${i}] : ` + floatAsQword(leak[i]).toString(16));
                 }
                 is_leak = false;
                 //await audioCtx.suspend(audioCtx.currentTime+ 0.01);
