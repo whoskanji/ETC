@@ -1,4 +1,4 @@
-var socket = new WebSocket("wss://slug-detected.herokuapp.com/")
+//var socket = new WebSocket("wss://slug-detected.herokuapp.com/")
 
 function sleep(sleepDuration) {
 	var now = new Date().getTime();
