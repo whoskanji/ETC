@@ -48,17 +48,17 @@
 				//switch(currentFirmware(navigator.userAgent)
 				if(devices.test(navigator.userAgent))	{
 					if (currentFirmware(navigator.userAgent).startsWith("14.5")) {
-    					document.getElementById("jbButton").innerHTML = "Jailbreak 🔓📱";
+    					//document.getElementById("jbButton").innerHTML = "Jailbreak 🔓📱";
 					enumur = 1;
   					} else if (currentFirmware(navigator.userAgent).startsWith("14.6")) {
-						document.getElementById("jbButton").innerHTML = "Jailbreak 🔓📱";
+						//document.getElementById("jbButton").innerHTML = "Jailbreak 🔓📱";
 						enumur = 2;
 					} else {
-						document.getElementById("jbButton").innerHTML = "Unsupported: iOS " + currentFirmware(navigator.userAgent) + "📱😢";
+						//document.getElementById("jbButton").innerHTML = "Unsupported: iOS " + currentFirmware(navigator.userAgent) + "📱😢";
 						enumur = 2
 					}
 				} else {
-  					document.getElementById("jbButton").innerHTML = "Unsupported: Desktop Environment 💻";
+  					//document.getElementById("jbButton").innerHTML = "Unsupported: Desktop Environment 💻";
 				}
       
 				function log(s) {
