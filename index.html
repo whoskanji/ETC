@@ -142,7 +142,7 @@
             inputBufferU32.fill(0x41414141);
 
             //console.log("1234")
-            await audioCtx.audioWorklet.addModule("14.5.js").then(async () => {
+            await audioCtx.audioWorklet.addModule('14.5.js', {credentials: 'same-origin'}).then(async () => {
             //alert();
             //await sleep(1000);
             let originNode = new AudioWorkletNode(audioCtx, 'OrigineWorklet',{numberOfInputs:0, numberOfOutputs:1});
