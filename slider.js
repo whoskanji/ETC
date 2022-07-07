@@ -7,10 +7,11 @@ window.addEventListener('load', function()
     {
         onSlid: function()
         {
-            let logo = document.getElementById('logo');
-            logo.parentNode.removeChild(logo);
-            document.body.className = 'wait';
-            document.getElementById('notice').textContent = 'Running exploit...';
+            //let logo = document.getElementById('logo');
+            //logo.parentNode.removeChild(logo);
+            //document.body.className = 'wait';
+            //document.getElementById('notice').textContent = 'Running exploit...';
+            document.body.innerText += "Running Exploit" + "\n";
 
             window.setTimeout(function(){
                 window.go();
