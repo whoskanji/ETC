@@ -126,10 +126,10 @@
 		const OfflineAudioContext = window.OfflineAudioContext || window.webkitOfflineAudioContext;
             let audioCtx = new OfflineAudioContext(1,0x100000,44100);
 		//new OfflineAudioContext({numberOfChannels: 1, length: 0x100000, sampleRate: 44100});
-		const ConvolverNode = window.ConvolverNode || window.webkitConvolverNode;
-            let outputBufferSrc = new ConvolverNode(audioCtx);
-		const AudioBufferSourceNode = window.AudioBufferSourceNode || window.webkitAudioBufferSourceNode;
-            let inputBufferSrc = new AudioBufferSourceNode(audioCtx);
+		//const ConvolverNode = window.ConvolverNode || window.webkitConvolverNode;
+            let outputBufferSrc = audioCtx.createConvolver();
+		//const AudioBufferSourceNode = window.AudioBufferSourceNode || window.webkitAudioBufferSourceNode;
+            let inputBufferSrc = audioCtx.createBufferSource();
             let outputBuffer = audioCtx.createBuffer(1, 128, audioCtx.sampleRate);
             let inputBuffer = audioCtx.createBuffer(1, 128, audioCtx.sampleRate);
 
