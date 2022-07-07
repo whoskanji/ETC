@@ -152,7 +152,7 @@
             let source = audioCtx.createBufferSource();
             let myArrayBuffer = audioCtx.createBuffer(1, 128, audioCtx.sampleRate);
             //await sleep(500);
-		sleep(500)
+		await sleep(500)
             //alert();
             let is_leak = true;
             originNode2.port.onmessage = async (e)=>{
@@ -187,7 +187,7 @@
             .connect(audioCtx.destination);
             */
             //originNode2.connect(audioCtx.destination);
-            audioCtx.startRendering();
+            await audioCtx.startRendering();
             //alert("fuck");
 
         }
