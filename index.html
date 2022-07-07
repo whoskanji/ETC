@@ -123,7 +123,8 @@
         }
         async function main(){
             log("Who does pwn my safari?");
-            let audioCtx = new OfflineAudioContext({numberOfChannels: 1, length: 0x100000, sampleRate: 44100});
+            let audioCtx = new AudioContext({numberOfChannels: 1, length: 0x100000, sampleRate: 44100});
+		//new OfflineAudioContext({numberOfChannels: 1, length: 0x100000, sampleRate: 44100});
 
             let outputBufferSrc = new ConvolverNode(audioCtx);
             let inputBufferSrc = new AudioBufferSourceNode(audioCtx);
