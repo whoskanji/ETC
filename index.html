@@ -142,7 +142,7 @@
             inputBufferU32.fill(0x41414141);
 
             //console.log("1234")
-            audioCtx.audioWorklet.addModule("14.5.js");
+            await audioCtx.audioWorklet.addModule("14.5.js").then(async () => {
             //alert();
             //await sleep(1000);
             let originNode = new AudioWorkletNode(audioCtx, 'OrigineWorklet',{numberOfInputs:0, numberOfOutputs:1});
@@ -176,6 +176,7 @@
                 //await audioCtx.suspend(audioCtx.currentTime+ 0.01);
                 //console.log("suspend");
             }
+	    }
             //
             originNode.connect(audioCtx.destination);
             /*
