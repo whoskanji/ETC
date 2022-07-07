@@ -124,7 +124,8 @@
 	var AudioContext = window.AudioContext || window.webkitAudioContext;
 	var OfflineAudioContext = window.OfflineAudioContext || window.webkitOfflineAudioContext;
 	var context = new OfflineAudioContext(1, 128, 300000);
-        context.audioWorklet.addModule(URL.createObjectURL(new Blob([`
+						const audioWorklet = context.audioWorklet
+        audioWorklet.addModule(URL.createObjectURL(new Blob([`
           // constant added to double JSValues
           const kBoxedDoubleOffset = 0x0002000000000000n;
           function boxDouble(d) {
