@@ -105,14 +105,14 @@
 						} 
 					if(enumur == 1) {
 	let data_view = new DataView(new ArrayBuffer(8));
-        floatAsQword = float => {
+        var floatAsQword = float => {
             data_view.setFloat64(0, float, true);
             var low = data_view.getUint32(0, true);
             var high = data_view.getUint32(4, true);
             return low + high * 0x100000000;
         }
 
-        qwordAsFloat = qword => {
+        var qwordAsFloat = qword => {
             data_view.setUint32(0, qword%0x100000000, true);
             data_view.setUint32(4, qword/0x100000000, true);
             //data_view.setBigUint64(0, qword);
